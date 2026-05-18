@@ -1,0 +1,5 @@
+iniciar servicio service.msc mysql96
+cd backend npm run dev
+cd frontend npx expo start -c
+ipconfig ipv4
+misma red wifi

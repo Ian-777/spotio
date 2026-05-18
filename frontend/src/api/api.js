@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.11:3000"; // CAMBIA ESTO
+const API_URL = "http://192.168.1.12:3000"; // CAMBIA ESTO
 
 export const getCities = async () => {
   const res = await fetch(`${API_URL}/api/cities`);
