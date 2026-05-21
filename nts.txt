@@ -3,3 +3,4 @@ cd backend npm run dev
 cd frontend npx expo start -c
 ipconfig ipv4
 misma red wifi
+psql -U postgres

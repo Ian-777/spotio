@@ -1,6 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+/* AUTH */
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
+
+/* APP */
 import CityScreen from "../screens/CityScreen";
 import LocalityScreen from "../screens/LocalityScreen";
 import NeighborhoodScreen from "../screens/NeighborhoodScreen";
@@ -13,6 +18,7 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Login"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#0D0D0D",
@@ -29,6 +35,26 @@ export default function AppNavigator() {
           },
         }}
       >
+        {/* AUTH */}
+
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            title: "Iniciar sesión",
+          }}
+        />
+
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{
+            title: "Crear cuenta",
+          }}
+        />
+
+        {/* APP */}
+
         <Stack.Screen
           name="Cities"
           component={CityScreen}
