@@ -36,21 +36,36 @@ export default function CityScreen({ navigation }) {
           Selecciona una ciudad
         </Text>
 
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={logout}
-        >
-          <Text style={styles.logoutText}>
-            Salir
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={() =>
+              navigation.navigate("Favorites")
+            }
+          >
+            <Text style={styles.favoriteText}>
+              ❤️
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={logout}
+          >
+            <Text style={styles.logoutText}>
+              Salir
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* LISTA */}
 
       <FlatList
         data={cities}
-        keyExtractor={(item) => item.city_id.toString()}
+        keyExtractor={(item) =>
+          item.city_id.toString()
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
@@ -84,10 +99,29 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
+  headerButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
   title: {
     fontSize: 22,
     color: "#FFFFFF",
     fontWeight: "bold",
+  },
+
+  favoriteButton: {
+    backgroundColor: "#1E1E1E",
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+
+  favoriteText: {
+    fontSize: 18,
   },
 
   logoutButton: {

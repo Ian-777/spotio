@@ -16,6 +16,7 @@ import LocalityScreen from "../screens/LocalityScreen";
 import NeighborhoodScreen from "../screens/NeighborhoodScreen";
 import CategoryScreen from "../screens/CategoryScreen";
 import StoreScreen from "../screens/StoreScreen";
+import FavoritesScreen from "../screens/FavoritesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,12 @@ export default function AppNavigator() {
               name="Cities"
               component={CityScreen}
               options={{ title: "Ciudades" }}
+            />
+
+            <Stack.Screen
+              name="Favorites"
+              component={FavoritesScreen}
+              options={{ title: "Mis favoritos" }}
             />
 
             <Stack.Screen

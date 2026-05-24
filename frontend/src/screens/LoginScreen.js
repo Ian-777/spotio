@@ -44,7 +44,10 @@ export default function LoginScreen({ navigation }) {
         return Alert.alert("Error", data.message);
       }
 
-      await login(data.token);
+      await login(
+    data.token,
+    data.user
+    );
 
     } catch (error) {
       console.log(error);
