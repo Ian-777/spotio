@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import {
   View,
@@ -9,10 +9,14 @@ import {
   Alert,
 } from "react-native";
 
+import { AuthContext } from "../context/AuthContext";
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
+
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -40,9 +44,8 @@ export default function LoginScreen({ navigation }) {
         return Alert.alert("Error", data.message);
       }
 
-      Alert.alert("Correcto", "Inicio de sesión exitoso");
+      await login(data.token);
 
-      navigation.replace("Cities");
     } catch (error) {
       console.log(error);
 
