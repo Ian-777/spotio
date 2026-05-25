@@ -17,6 +17,7 @@ import NeighborhoodScreen from "../screens/NeighborhoodScreen";
 import CategoryScreen from "../screens/CategoryScreen";
 import StoreScreen from "../screens/StoreScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
+import StoreDetailsScreen from "../screens/StoreDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -100,6 +101,12 @@ export default function AppNavigator() {
               name="Stores"
               component={StoreScreen}
               options={{ title: "Establecimientos" }}
+            />
+
+            <Stack.Screen
+              name="StoreDetails"
+              component={StoreDetailsScreen}
+              options={{ title: "Detalles" }}
             />
           </>
         )}

@@ -17,7 +17,10 @@ import StoreCard from "../components/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
 
-export default function StoreScreen({ route }) {
+export default function StoreScreen({
+  route,
+  navigation,
+}) {
   const {
     city_id,
     locality_id,
@@ -67,7 +70,9 @@ export default function StoreScreen({ route }) {
     }
   };
 
-  const toggleFavorite = async (store_id) => {
+  const toggleFavorite = async (
+    store_id
+  ) => {
     try {
       const isFavorite =
         favoriteStores.includes(store_id);
@@ -88,7 +93,9 @@ export default function StoreScreen({ route }) {
         }
 
         setFavoriteStores((prev) =>
-          prev.filter((id) => id !== store_id)
+          prev.filter(
+            (id) => id !== store_id
+          )
         );
       } else {
         const response = await fetch(
@@ -108,7 +115,8 @@ export default function StoreScreen({ route }) {
           }
         );
 
-        const data = await response.json();
+        const data =
+          await response.json();
 
         if (!response.ok) {
           return Alert.alert(
@@ -152,7 +160,11 @@ export default function StoreScreen({ route }) {
       </Text>
 
       {stores.length === 0 ? (
-        <Text style={{ color: "#A1A1AA" }}>
+        <Text
+          style={{
+            color: "#A1A1AA",
+          }}
+        >
           No hay resultados
         </Text>
       ) : (
@@ -168,7 +180,17 @@ export default function StoreScreen({ route }) {
                 item.store_id
               )}
               onFavorite={() =>
-                toggleFavorite(item.store_id)
+                toggleFavorite(
+                  item.store_id
+                )
+              }
+              onPress={() =>
+                navigation.navigate(
+                  "StoreDetails",
+                  {
+                    store: item,
+                  }
+                )
               }
             />
           )}

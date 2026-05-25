@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Image,
 } from "react-native";
 
 import {
@@ -13,12 +14,14 @@ import {
 
 import {
   MaterialIcons,
+  FontAwesome,
 } from "@expo/vector-icons";
 
 export default function StoreCard({
   store,
   onFavorite,
   isFavorite,
+  onPress,
 }) {
   const scaleAnim = useRef(
     new Animated.Value(1)
@@ -57,78 +60,113 @@ export default function StoreCard({
   }, [isFavorite]);
 
   return (
-    <View style={styles.card}>
-      {/* HEADER */}
+    <TouchableOpacity
+      activeOpacity={0.88}
+      onPress={onPress}
+    >
+      <View style={styles.card}>
+        {/* IMAGEN */}
 
-      <View style={styles.header}>
-        <Text style={styles.title}>
-          {store.name}
-        </Text>
+        <Image
+          source={{
+            uri:
+              store.image_url ||
+              "https://via.placeholder.com/400x200",
+          }}
+          style={styles.image}
+        />
 
-        <TouchableOpacity
-          style={styles.favoriteButton}
-          onPress={onFavorite}
-        >
-          <Animated.View
-            style={{
-              transform: [
-                {
-                  scale: scaleAnim,
-                },
-              ],
-            }}
+        {/* HEADER */}
+
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            {store.name}
+          </Text>
+
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={onFavorite}
           >
-            <MaterialIcons
-              name={
-                isFavorite
-                  ? "favorite"
-                  : "favorite-border"
-              }
-              size={28}
-              color={
-                isFavorite
-                  ? "#7C3AED"
-                  : "#6B7280"
-              }
-            />
-          </Animated.View>
-        </TouchableOpacity>
-      </View>
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    scale: scaleAnim,
+                  },
+                ],
+              }}
+            >
+              <MaterialIcons
+                name={
+                  isFavorite
+                    ? "favorite"
+                    : "favorite-border"
+                }
+                size={28}
+                color={
+                  isFavorite
+                    ? "#7C3AED"
+                    : "#6B7280"
+                }
+              />
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
 
-      {/* DIRECCIÓN */}
+        {/* DIRECCIÓN */}
 
-      <Text style={styles.address}>
-        {store.address}
-      </Text>
+        <Text style={styles.address}>
+          {store.address}
+        </Text>
 
-      {/* CATEGORÍA */}
+        {/* CATEGORÍA */}
 
-      <View style={styles.row}>
-        <Text
-          style={[
-            styles.badge,
-            {
-              backgroundColor:
-                store.category_name === "Comer"
-                  ? "#3B82F6"
-                  : "#7C3AED",
-            },
-          ]}
-        >
-          {store.category_name}
+        <View style={styles.row}>
+          <Text
+            style={[
+              styles.badge,
+              {
+                backgroundColor:
+                  store.category_name ===
+                  "Comer"
+                    ? "#3B82F6"
+                    : "#7C3AED",
+              },
+            ]}
+          >
+            {store.category_name}
+          </Text>
+        </View>
+
+        {/* RATING */}
+
+        <View style={styles.ratingContainer}>
+          <FontAwesome
+            name="star"
+            size={15}
+            color="#FACC15"
+          />
+
+          <Text style={styles.ratingText}>
+            {store.average_rating || "0.0"}
+
+            {"  "}
+
+            ({store.total_ratings || 0})
+          </Text>
+        </View>
+
+        {/* UBICACIÓN */}
+
+        <Text style={styles.meta}>
+          {store.locality_name}
+
+          {store.neighborhood_name
+            ? ` • ${store.neighborhood_name}`
+            : " • Sin barrio"}
         </Text>
       </View>
-
-      {/* UBICACIÓN */}
-
-      <Text style={styles.meta}>
-        {store.locality_name}
-
-        {store.neighborhood_name
-          ? ` • ${store.neighborhood_name}`
-          : " • Sin barrio"}
-      </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -137,6 +175,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E1E",
     padding: 16,
     borderRadius: 16,
+    marginBottom: 12,
+  },
+
+  image: {
+    width: "100%",
+    height: 180,
+    borderRadius: 14,
     marginBottom: 12,
   },
 
@@ -170,6 +215,19 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     marginBottom: 6,
+  },
+
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+
+  ratingText: {
+    color: "#FFFFFF",
+    marginLeft: 6,
+    fontSize: 13,
+    fontWeight: "600",
   },
 
   badge: {

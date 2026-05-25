@@ -4,3 +4,15 @@ cd frontend npx expo start -c
 ipconfig ipv4
 misma red wifi
 psql -U postgres
+
+
+
+
+SELECT * FROM stores;
+
+
+***AGREGAR IMAGEN****
+UPDATE stores
+SET image_url =
+'https://lh3.googleusercontent.com/gps-cs-s/APNQkAF7hfyMIo6qZHyOlF9Bl3CtVjk2zv2LoMAP1n-AE0iWtTCHGn9O33XwOvABJJ37tCK7lk9wIGbupX905VL7Y6Vg8p5NfzmRzl5abOxbt0FD9OClEi-V8H7nQrJxkwxS_ripOsq4=s1360-w1360-h1020-rw'
+WHERE store_id = 2;
