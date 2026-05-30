@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
 
 import {
@@ -15,6 +16,7 @@ import {
 import {
   useContext,
   useState,
+  useEffect,
 } from "react";
 
 import { AuthContext } from "../context/AuthContext";
@@ -28,7 +30,7 @@ export default function StoreDetailsScreen({
     useContext(AuthContext);
 
   const [userRating, setUserRating] =
-    useState(null);
+    useState(0);
 
   const [averageRating, setAverageRating] =
     useState(
@@ -40,12 +42,101 @@ export default function StoreDetailsScreen({
       Number(store.total_ratings || 0)
     );
 
+  const [reviews, setReviews] =
+    useState([]);
+
+  const [reviewText, setReviewText] =
+    useState("");
+
+  useEffect(() => {
+    loadUserRating();
+    loadReviews();
+  }, []);
+
+  const loadUserRating = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.12:3000/api/ratings/${store.store_id}/${user.user_id}`
+      );
+
+      const data = await response.json();
+
+      if (data?.rating) {
+        setUserRating(
+          Number(data.rating)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const loadReviews = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.12:3000/api/reviews/${store.store_id}`
+      );
+
+      const data = await response.json();
+
+      setReviews(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const submitReview = async () => {
+    try {
+      if (!reviewText.trim()) {
+        return Alert.alert(
+          "Error",
+          "Escribe una reseña"
+        );
+      }
+
+      const response = await fetch(
+        "http://192.168.1.12:3000/api/reviews",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            user_id: user.user_id,
+            store_id: store.store_id,
+            comment: reviewText,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        return Alert.alert(
+          "Error",
+          "No se pudo guardar la reseña"
+        );
+      }
+
+      setReviewText("");
+
+      loadReviews();
+    } catch (error) {
+      console.log(error);
+
+      Alert.alert(
+        "Error",
+        "No se pudo conectar al servidor"
+      );
+    }
+  };
+
   const submitRating = async (
     rating
   ) => {
     try {
-      const previousRating =
-        userRating;
+      const oldRating = userRating;
 
       setUserRating(rating);
 
@@ -74,10 +165,11 @@ export default function StoreDetailsScreen({
         );
       }
 
-      /* NUEVO USUARIO */
+      let newAverage = averageRating;
+      let newTotal = totalRatings;
 
-      if (previousRating === null) {
-        const newAverage =
+      if (oldRating === 0) {
+        newAverage =
           (
             averageRating *
               totalRatings +
@@ -85,26 +177,25 @@ export default function StoreDetailsScreen({
           ) /
           (totalRatings + 1);
 
-        setAverageRating(newAverage);
-
-        setTotalRatings(
-          totalRatings + 1
-        );
-      }
-
-      /* ACTUALIZAR RATING */
-
-      else {
-        const newAverage =
+        newTotal =
+          totalRatings + 1;
+      } else {
+        newAverage =
           (
             averageRating *
               totalRatings -
-            previousRating +
+            oldRating +
             rating
           ) / totalRatings;
-
-        setAverageRating(newAverage);
       }
+
+      setAverageRating(
+        newAverage
+      );
+
+      setTotalRatings(
+        newTotal
+      );
     } catch (error) {
       console.log(error);
 
@@ -143,7 +234,8 @@ export default function StoreDetailsScreen({
               styles.badge,
               {
                 backgroundColor:
-                  store.category_name === "Comer"
+                  store.category_name ===
+                  "Comer"
                     ? "#3B82F6"
                     : "#7C3AED",
               },
@@ -163,11 +255,11 @@ export default function StoreDetailsScreen({
           />
 
           <Text style={styles.ratingText}>
-            {averageRating.toFixed(1)}
+            {averageRating.toFixed(
+              1
+            )}
 
-            {"  "}
-
-            (
+            {"  "}(
             {totalRatings}
             {" "}
             calificaciones)
@@ -187,18 +279,23 @@ export default function StoreDetailsScreen({
                 <TouchableOpacity
                   key={star}
                   onPress={() =>
-                    submitRating(star)
+                    submitRating(
+                      star
+                    )
                   }
                 >
                   <FontAwesome
                     name={
-                      star <= userRating
+                      star <=
+                      userRating
                         ? "star"
                         : "star-o"
                     }
                     size={34}
                     color="#FACC15"
-                    style={styles.star}
+                    style={
+                      styles.star
+                    }
                   />
                 </TouchableOpacity>
               )
@@ -250,10 +347,91 @@ export default function StoreDetailsScreen({
             Descripción
           </Text>
 
-          <Text style={styles.description}>
+          <Text
+            style={
+              styles.description
+            }
+          >
             {store.description ||
               "Este establecimiento aún no tiene descripción."}
           </Text>
+        </View>
+
+        {/* RESEÑAS */}
+
+        <View style={styles.section}>
+          <Text style={styles.label}>
+            Reseñas
+          </Text>
+
+          <TextInput
+            style={
+              styles.input
+            }
+            placeholder="Escribe tu opinión..."
+            placeholderTextColor="#888"
+            value={reviewText}
+            onChangeText={
+              setReviewText
+            }
+            multiline
+          />
+
+          <TouchableOpacity
+            style={
+              styles.button
+            }
+            onPress={
+              submitReview
+            }
+          >
+            <Text
+              style={
+                styles.buttonText
+              }
+            >
+              Publicar reseña
+            </Text>
+          </TouchableOpacity>
+
+        {reviews.map(
+  (review) => (
+    <View
+      key={
+        review.review_id
+      }
+      style={
+        styles.reviewCard
+      }
+    >
+      <Text
+        style={
+          styles.reviewAuthor
+        }
+      >
+        {review.name}
+      </Text>
+
+      <Text
+        style={
+          styles.reviewDate
+        }
+      >
+        {new Date(
+          review.created_at
+        ).toLocaleDateString()}
+      </Text>
+
+      <Text
+        style={
+          styles.reviewText
+        }
+      >
+        {review.comment}
+      </Text>
+    </View>
+  )
+)}
         </View>
       </View>
     </ScrollView>
@@ -263,7 +441,8 @@ export default function StoreDetailsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D0D0D",
+    backgroundColor:
+      "#0D0D0D",
   },
 
   image: {
@@ -337,7 +516,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 6,
     fontWeight: "bold",
-    textTransform: "uppercase",
+    textTransform:
+      "uppercase",
   },
 
   text: {
@@ -350,5 +530,53 @@ const styles = StyleSheet.create({
     color: "#D4D4D8",
     fontSize: 15,
     lineHeight: 26,
+  },
+
+  input: {
+    backgroundColor:
+      "#1E1E1E",
+    color: "#FFFFFF",
+    borderRadius: 12,
+    padding: 12,
+    minHeight: 90,
+    marginBottom: 12,
+  },
+
+  button: {
+    backgroundColor:
+      "#7C3AED",
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+
+  reviewCard: {
+    backgroundColor:
+      "#1E1E1E",
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+
+  reviewAuthor: {
+    color: "#7C3AED",
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+
+  reviewDate: {
+  color: "#A1A1AA",
+  fontSize: 12,
+  marginBottom: 8,
+},
+
+  reviewText: {
+    color: "#FFFFFF",
   },
 });

@@ -13,10 +13,35 @@ const addRating = async ({
     )
     VALUES ($1, $2, $3)
 
-    ON CONFLICT (user_id, store_id)
+    RETURNING *
+  `;
 
-    DO UPDATE SET
-      rating = EXCLUDED.rating
+  const values = [
+    user_id,
+    store_id,
+    rating,
+  ];
+
+  const result = await pool.query(
+    query,
+    values
+  );
+
+  return result.rows[0];
+};
+
+const updateRating = async ({
+  user_id,
+  store_id,
+  rating,
+}) => {
+  const query = `
+    UPDATE ratings
+
+    SET rating = $3
+
+    WHERE user_id = $1
+    AND store_id = $2
 
     RETURNING *
   `;
@@ -35,7 +60,9 @@ const addRating = async ({
   return result.rows[0];
 };
 
-const getStoreRating = async (store_id) => {
+const getStoreRating = async (
+  store_id
+) => {
   const query = `
     SELECT
       ROUND(AVG(rating), 1)
@@ -48,9 +75,10 @@ const getStoreRating = async (store_id) => {
     WHERE store_id = $1
   `;
 
-  const result = await pool.query(query, [
-    store_id,
-  ]);
+  const result = await pool.query(
+    query,
+    [store_id]
+  );
 
   return result.rows[0];
 };
@@ -83,6 +111,7 @@ const getUserRating = async (
 
 module.exports = {
   addRating,
+  updateRating,
   getStoreRating,
   getUserRating,
 };

@@ -11,6 +11,7 @@ const storesRoutes = require("./routes/storesRoutes");
 const authRoutes = require("./routes/authRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes");
 const ratingsRoutes = require("./routes/ratingsRoutes");
+const reviewsRoutes = require("./routes/reviewsRoutes");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/stores", storesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/favorites", favoritesRoutes);
 app.use("/api/ratings", ratingsRoutes);
+app.use("/api/reviews", reviewsRoutes);
 
 /* =========================
    RUTA PRINCIPAL

@@ -1,7 +1,7 @@
 import {
-  useEffect,
   useState,
   useContext,
+  useCallback,
 } from "react";
 
 import {
@@ -12,6 +12,8 @@ import {
   Alert,
 } from "react-native";
 
+import { useFocusEffect } from "@react-navigation/native";
+
 import StoreCard from "../components/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
@@ -21,9 +23,11 @@ export default function FavoritesScreen() {
 
   const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    loadFavorites();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadFavorites();
+    }, [])
+  );
 
   const loadFavorites = async () => {
     try {
