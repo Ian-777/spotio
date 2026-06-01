@@ -30,6 +30,64 @@ const addReview = async ({
   return result.rows[0];
 };
 
+const updateReview = async ({
+  user_id,
+  store_id,
+  comment,
+}) => {
+  const query = `
+    UPDATE reviews
+
+    SET
+      comment = $3,
+      created_at = NOW()
+
+    WHERE user_id = $1
+    AND store_id = $2
+
+    RETURNING *;
+  `;
+
+  const values = [
+    user_id,
+    store_id,
+    comment,
+  ];
+
+  const result = await pool.query(
+    query,
+    values
+  );
+
+  return result.rows[0];
+};
+
+const getUserReview = async (
+  user_id,
+  store_id
+) => {
+  const query = `
+    SELECT *
+
+    FROM reviews
+
+    WHERE user_id = $1
+    AND store_id = $2
+  `;
+
+  const values = [
+    user_id,
+    store_id,
+  ];
+
+  const result = await pool.query(
+    query,
+    values
+  );
+
+  return result.rows[0];
+};
+
 const getStoreReviews = async (
   store_id
 ) => {
@@ -63,5 +121,7 @@ const getStoreReviews = async (
 
 module.exports = {
   addReview,
+  updateReview,
+  getUserReview,
   getStoreReviews,
 };

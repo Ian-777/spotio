@@ -1,5 +1,7 @@
 const {
   addReview,
+  updateReview,
+  getUserReview,
   getStoreReviews,
 } = require("../models/reviewsModel");
 
@@ -14,12 +16,27 @@ const createReview = async (
       comment,
     } = req.body;
 
-    const review =
-      await addReview({
+    const existingReview =
+      await getUserReview(
+        user_id,
+        store_id
+      );
+
+    let review;
+
+    if (existingReview) {
+      review = await updateReview({
         user_id,
         store_id,
         comment,
       });
+    } else {
+      review = await addReview({
+        user_id,
+        store_id,
+        comment,
+      });
+    }
 
     res.status(201).json(review);
   } catch (error) {
@@ -56,7 +73,35 @@ const getReviews = async (
   }
 };
 
+const getMyReview = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      user_id,
+      store_id,
+    } = req.params;
+
+    const review =
+      await getUserReview(
+        user_id,
+        store_id
+      );
+
+    res.json(review || null);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        "Error al obtener reseña del usuario",
+    });
+  }
+};
+
 module.exports = {
   createReview,
   getReviews,
+  getMyReview,
 };

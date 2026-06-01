@@ -48,9 +48,13 @@ export default function StoreDetailsScreen({
   const [reviewText, setReviewText] =
     useState("");
 
+  const [hasReview, setHasReview] =
+    useState(false);
+
   useEffect(() => {
     loadUserRating();
     loadReviews();
+    loadMyReview();
   }, []);
 
   const loadUserRating = async () => {
@@ -84,6 +88,28 @@ export default function StoreDetailsScreen({
       console.log(error);
     }
   };
+
+
+  const loadMyReview = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.12:3000/api/reviews/${store.store_id}/${user.user_id}`
+      );
+
+      const data = await response.json();
+
+      if (data?.comment) {
+        setReviewText(
+          data.comment
+        );
+
+        setHasReview(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const submitReview = async () => {
     try {
@@ -119,7 +145,7 @@ export default function StoreDetailsScreen({
         );
       }
 
-      setReviewText("");
+      setHasReview(true);
 
       loadReviews();
     } catch (error) {
@@ -172,7 +198,7 @@ export default function StoreDetailsScreen({
         newAverage =
           (
             averageRating *
-              totalRatings +
+            totalRatings +
             rating
           ) /
           (totalRatings + 1);
@@ -183,7 +209,7 @@ export default function StoreDetailsScreen({
         newAverage =
           (
             averageRating *
-              totalRatings -
+            totalRatings -
             oldRating +
             rating
           ) / totalRatings;
@@ -235,7 +261,7 @@ export default function StoreDetailsScreen({
               {
                 backgroundColor:
                   store.category_name ===
-                  "Comer"
+                    "Comer"
                     ? "#3B82F6"
                     : "#7C3AED",
               },
@@ -287,7 +313,7 @@ export default function StoreDetailsScreen({
                   <FontAwesome
                     name={
                       star <=
-                      userRating
+                        userRating
                         ? "star"
                         : "star-o"
                     }
@@ -390,48 +416,50 @@ export default function StoreDetailsScreen({
                 styles.buttonText
               }
             >
-              Publicar reseña
+              {hasReview
+                ? "Actualizar reseña"
+                : "Publicar reseña"}
             </Text>
           </TouchableOpacity>
 
-        {reviews.map(
-  (review) => (
-    <View
-      key={
-        review.review_id
-      }
-      style={
-        styles.reviewCard
-      }
-    >
-      <Text
-        style={
-          styles.reviewAuthor
-        }
-      >
-        {review.name}
-      </Text>
+          {reviews.map(
+            (review) => (
+              <View
+                key={
+                  review.review_id
+                }
+                style={
+                  styles.reviewCard
+                }
+              >
+                <Text
+                  style={
+                    styles.reviewAuthor
+                  }
+                >
+                  {review.name}
+                </Text>
 
-      <Text
-        style={
-          styles.reviewDate
-        }
-      >
-        {new Date(
-          review.created_at
-        ).toLocaleDateString()}
-      </Text>
+                <Text
+                  style={
+                    styles.reviewDate
+                  }
+                >
+                  {new Date(
+                    review.created_at
+                  ).toLocaleDateString()}
+                </Text>
 
-      <Text
-        style={
-          styles.reviewText
-        }
-      >
-        {review.comment}
-      </Text>
-    </View>
-  )
-)}
+                <Text
+                  style={
+                    styles.reviewText
+                  }
+                >
+                  {review.comment}
+                </Text>
+              </View>
+            )
+          )}
         </View>
       </View>
     </ScrollView>
@@ -571,10 +599,10 @@ const styles = StyleSheet.create({
   },
 
   reviewDate: {
-  color: "#A1A1AA",
-  fontSize: 12,
-  marginBottom: 8,
-},
+    color: "#A1A1AA",
+    fontSize: 12,
+    marginBottom: 8,
+  },
 
   reviewText: {
     color: "#FFFFFF",
