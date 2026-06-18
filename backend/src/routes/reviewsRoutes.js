@@ -6,11 +6,17 @@ const {
   createReview,
   getReviews,
   getMyReview,
+  removeReview,
 } = require("../controllers/reviewsController");
 
 router.post(
   "/",
   createReview
+);
+
+router.delete(
+  "/:store_id/:user_id",
+  removeReview
 );
 
 router.get(

@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.12:3000/api/auth/login",
+        "http://192.168.1.8:3000/api/auth/login",
         {
           method: "POST",
 

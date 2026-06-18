@@ -60,7 +60,7 @@ export default function StoreDetailsScreen({
   const loadUserRating = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.12:3000/api/ratings/${store.store_id}/${user.user_id}`
+        `http://192.168.1.8:3000/api/ratings/${store.store_id}/${user.user_id}`
       );
 
       const data = await response.json();
@@ -78,7 +78,7 @@ export default function StoreDetailsScreen({
   const loadReviews = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.12:3000/api/reviews/${store.store_id}`
+        `http://192.168.1.8:3000/api/reviews/${store.store_id}`
       );
 
       const data = await response.json();
@@ -90,25 +90,64 @@ export default function StoreDetailsScreen({
   };
 
 
-  const loadMyReview = async () => {
-    try {
-      const response = await fetch(
-        `http://192.168.1.12:3000/api/reviews/${store.store_id}/${user.user_id}`
-      );
+const loadMyReview = async () => {
+  try {
+    const response = await fetch(
+      `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`
+    );
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data?.comment) {
-        setReviewText(
-          data.comment
-        );
+    console.log("Mi reseña:", data);
 
-        setHasReview(true);
-      }
-    } catch (error) {
-      console.log(error);
+    if (data && data.comment) {
+      setReviewText(data.comment);
+      setHasReview(true);
+    } else {
+      setReviewText("");
+      setHasReview(false);
     }
-  };
+  } catch (error) {
+    console.log(error);
+    setHasReview(false);
+  }
+};
+
+
+  const deleteReview = async () => {
+  try {
+    const response = await fetch(
+      `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      return Alert.alert(
+        "Error",
+        "No se pudo eliminar la reseña"
+      );
+    }
+
+    setReviewText("");
+    setHasReview(false);
+
+    loadReviews();
+
+    Alert.alert(
+      "Éxito",
+      "Reseña eliminada"
+    );
+  } catch (error) {
+    console.log(error);
+
+    Alert.alert(
+      "Error",
+      "No se pudo conectar al servidor"
+    );
+  }
+};
 
 
   const submitReview = async () => {
@@ -121,7 +160,7 @@ export default function StoreDetailsScreen({
       }
 
       const response = await fetch(
-        "http://192.168.1.12:3000/api/reviews",
+        "http://192.168.1.8:3000/api/reviews",
         {
           method: "POST",
 
@@ -167,7 +206,7 @@ export default function StoreDetailsScreen({
       setUserRating(rating);
 
       const response = await fetch(
-        "http://192.168.1.12:3000/api/ratings",
+        "http://192.168.1.8:3000/api/ratings",
         {
           method: "POST",
 
@@ -422,6 +461,19 @@ export default function StoreDetailsScreen({
             </Text>
           </TouchableOpacity>
 
+
+          {hasReview && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={deleteReview}
+            >
+              <Text style={styles.deleteButtonText}>
+                Eliminar mi reseña
+              </Text>
+            </TouchableOpacity>
+          )}
+
+
           {reviews.map(
             (review) => (
               <View
@@ -607,4 +659,14 @@ const styles = StyleSheet.create({
   reviewText: {
     color: "#FFFFFF",
   },
+
+  deleteButton: {
+  marginTop: 10,
+  alignSelf: "flex-end",
+},
+
+deleteButtonText: {
+  color: "#EF4444",
+  fontWeight: "bold",
+},
 });

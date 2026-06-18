@@ -119,9 +119,34 @@ const getStoreReviews = async (
   return result.rows;
 };
 
+const deleteReview = async (
+  user_id,
+  store_id
+) => {
+  const query = `
+    DELETE FROM reviews
+
+    WHERE user_id = $1
+    AND store_id = $2
+
+    RETURNING *;
+  `;
+
+  const result = await pool.query(
+    query,
+    [
+      user_id,
+      store_id,
+    ]
+  );
+
+  return result.rows[0];
+};
+
 module.exports = {
   addReview,
   updateReview,
   getUserReview,
   getStoreReviews,
+  deleteReview,
 };

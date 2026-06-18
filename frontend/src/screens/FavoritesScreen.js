@@ -32,7 +32,7 @@ export default function FavoritesScreen() {
   const loadFavorites = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.12:3000/api/favorites/${user.user_id}`
+        `http://192.168.1.8:3000/api/favorites/${user.user_id}`
       );
 
       const data = await response.json();
@@ -50,7 +50,7 @@ export default function FavoritesScreen() {
     try {
       if (isFavorite) {
         const response = await fetch(
-          `http://192.168.1.12:3000/api/favorites/${user.user_id}/${store_id}`,
+          `http://192.168.1.8:3000/api/favorites/${user.user_id}/${store_id}`,
           {
             method: "DELETE",
           }
@@ -75,7 +75,7 @@ export default function FavoritesScreen() {
         );
       } else {
         const response = await fetch(
-          "http://192.168.1.12:3000/api/favorites",
+          "http://192.168.1.8:3000/api/favorites",
           {
             method: "POST",
 

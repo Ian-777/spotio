@@ -3,6 +3,7 @@ const {
   updateReview,
   getUserReview,
   getStoreReviews,
+  deleteReview,
 } = require("../models/reviewsModel");
 
 const createReview = async (
@@ -100,8 +101,36 @@ const getMyReview = async (
   }
 };
 
+const removeReview = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      user_id,
+      store_id,
+    } = req.params;
+
+    const review =
+      await deleteReview(
+        user_id,
+        store_id
+      );
+
+    res.json(review);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        "Error al eliminar reseña",
+    });
+  }
+};
+
 module.exports = {
   createReview,
   getReviews,
   getMyReview,
+  removeReview,
 };
