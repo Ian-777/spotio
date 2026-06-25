@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   Alert,
   TextInput,
@@ -12,6 +11,8 @@ import {
 import {
   FontAwesome,
 } from "@expo/vector-icons";
+
+import GalleryCarousel from "../components/GalleryCarousel";
 
 import {
   useContext,
@@ -90,64 +91,64 @@ export default function StoreDetailsScreen({
   };
 
 
-const loadMyReview = async () => {
-  try {
-    const response = await fetch(
-      `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`
-    );
+  const loadMyReview = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    console.log("Mi reseña:", data);
+      console.log("Mi reseña:", data);
 
-    if (data && data.comment) {
-      setReviewText(data.comment);
-      setHasReview(true);
-    } else {
-      setReviewText("");
+      if (data && data.comment) {
+        setReviewText(data.comment);
+        setHasReview(true);
+      } else {
+        setReviewText("");
+        setHasReview(false);
+      }
+    } catch (error) {
+      console.log(error);
       setHasReview(false);
     }
-  } catch (error) {
-    console.log(error);
-    setHasReview(false);
-  }
-};
+  };
 
 
   const deleteReview = async () => {
-  try {
-    const response = await fetch(
-      `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`,
-      {
-        method: "DELETE",
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://192.168.1.8:3000/api/reviews/${store.store_id}/${user.user_id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    if (!response.ok) {
-      return Alert.alert(
+      if (!response.ok) {
+        return Alert.alert(
+          "Error",
+          "No se pudo eliminar la reseña"
+        );
+      }
+
+      setReviewText("");
+      setHasReview(false);
+
+      loadReviews();
+
+      Alert.alert(
+        "Éxito",
+        "Reseña eliminada"
+      );
+    } catch (error) {
+      console.log(error);
+
+      Alert.alert(
         "Error",
-        "No se pudo eliminar la reseña"
+        "No se pudo conectar al servidor"
       );
     }
-
-    setReviewText("");
-    setHasReview(false);
-
-    loadReviews();
-
-    Alert.alert(
-      "Éxito",
-      "Reseña eliminada"
-    );
-  } catch (error) {
-    console.log(error);
-
-    Alert.alert(
-      "Error",
-      "No se pudo conectar al servidor"
-    );
-  }
-};
+  };
 
 
   const submitReview = async () => {
@@ -275,13 +276,9 @@ const loadMyReview = async () => {
     <ScrollView style={styles.container}>
       {/* IMAGEN */}
 
-      <Image
-        source={{
-          uri:
-            store.image_url ||
-            "https://via.placeholder.com/500x300",
-        }}
-        style={styles.image}
+      <GalleryCarousel
+        store={store}
+        user={user}
       />
 
       <View style={styles.content}>
@@ -661,12 +658,12 @@ const styles = StyleSheet.create({
   },
 
   deleteButton: {
-  marginTop: 10,
-  alignSelf: "flex-end",
-},
+    marginTop: 10,
+    alignSelf: "flex-end",
+  },
 
-deleteButtonText: {
-  color: "#EF4444",
-  fontWeight: "bold",
-},
+  deleteButtonText: {
+    color: "#EF4444",
+    fontWeight: "bold",
+  },
 });
