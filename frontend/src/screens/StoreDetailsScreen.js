@@ -12,7 +12,7 @@ import {
   FontAwesome,
 } from "@expo/vector-icons";
 
-import GalleryCarousel from "../components/GalleryCarousel";
+import StoreHeader from "../components/store/StoreHeader";
 
 import {
   useContext,
@@ -272,62 +272,25 @@ export default function StoreDetailsScreen({
     }
   };
 
+
+  //cCAMBIO*********
   return (
     <ScrollView style={styles.container}>
       {/* IMAGEN */}
 
-      <GalleryCarousel
-        store={store}
-        user={user}
-      />
+      <StoreHeader
+  store={{
+    ...store,
+    average_rating:
+      averageRating.toFixed(1),
+    total_ratings:
+      totalRatings,
+  }}
+  user={user}
+/>
 
-      <View style={styles.content}>
-        {/* NOMBRE */}
-
-        <Text style={styles.title}>
-          {store.name}
-        </Text>
-
-        {/* CATEGORÍA */}
-
-        <View style={styles.badgeContainer}>
-          <Text
-            style={[
-              styles.badge,
-              {
-                backgroundColor:
-                  store.category_name ===
-                    "Comer"
-                    ? "#3B82F6"
-                    : "#7C3AED",
-              },
-            ]}
-          >
-            {store.category_name}
-          </Text>
-        </View>
-
-        {/* RATING */}
-
-        <View style={styles.ratingContainer}>
-          <FontAwesome
-            name="star"
-            size={20}
-            color="#FACC15"
-          />
-
-          <Text style={styles.ratingText}>
-            {averageRating.toFixed(
-              1
-            )}
-
-            {"  "}(
-            {totalRatings}
-            {" "}
-            calificaciones)
-          </Text>
-        </View>
-
+<View style={styles.content}>
+       
         {/* CALIFICAR */}
 
         <View style={styles.rateContainer}>

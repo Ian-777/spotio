@@ -13,7 +13,7 @@ import {
 
 import { searchStores } from "../api/api";
 
-import StoreCard from "../components/StoreCard";
+import StoreCard from "../components/cards/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
 

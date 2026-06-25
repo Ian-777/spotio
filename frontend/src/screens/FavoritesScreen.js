@@ -14,7 +14,7 @@ import {
 
 import { useFocusEffect } from "@react-navigation/native";
 
-import StoreCard from "../components/StoreCard";
+import StoreCard from "../components/cards/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
 
