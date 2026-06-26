@@ -15,6 +15,7 @@ const createReview = async (
       user_id,
       store_id,
       comment,
+      photo_id = null,
     } = req.body;
 
     const existingReview =
@@ -30,12 +31,14 @@ const createReview = async (
         user_id,
         store_id,
         comment,
+        photo_id,
       });
     } else {
       review = await addReview({
         user_id,
         store_id,
         comment,
+        photo_id,
       });
     }
 

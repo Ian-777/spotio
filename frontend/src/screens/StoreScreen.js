@@ -8,7 +8,6 @@ import {
   View,
   Text,
   FlatList,
-  Alert,
 } from "react-native";
 
 import { searchStores } from "../api/api";
@@ -16,6 +15,8 @@ import { searchStores } from "../api/api";
 import StoreCard from "../components/cards/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
+
+import useFavorites from "../hooks/useFavorites";
 
 export default function StoreScreen({
   route,
@@ -28,124 +29,53 @@ export default function StoreScreen({
     category_id,
   } = route.params;
 
-  const { user } = useContext(AuthContext);
+  const { user } =
+    useContext(AuthContext);
 
-  const [stores, setStores] = useState([]);
-
-  const [favoriteStores, setFavoriteStores] =
+  const [stores, setStores] =
     useState([]);
+
+  const {
+    favoriteStores,
+    toggleFavorite,
+  } = useFavorites(user);
 
   useEffect(() => {
     loadStores();
-
-    loadFavorites();
   }, []);
 
-  const loadStores = async () => {
-    const data = await searchStores({
-      city_id,
-      locality_id,
-      neighborhood_id,
-      category_id,
-    });
-
-    setStores(data);
-  };
-
-  const loadFavorites = async () => {
-    try {
-      const response = await fetch(
-        `http://192.168.1.8:3000/api/favorites/${user.user_id}`
-      );
-
-      const data = await response.json();
-
-      const favoriteIds = data.map(
-        (item) => item.store_id
-      );
-
-      setFavoriteStores(favoriteIds);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const toggleFavorite = async (
-    store_id
-  ) => {
-    try {
-      const isFavorite =
-        favoriteStores.includes(store_id);
-
-      if (isFavorite) {
-        const response = await fetch(
-          `http://192.168.1.8:3000/api/favorites/${user.user_id}/${store_id}`,
-          {
-            method: "DELETE",
-          }
-        );
-
-        if (!response.ok) {
-          return Alert.alert(
-            "Error",
-            "No se pudo eliminar favorito"
-          );
-        }
-
-        setFavoriteStores((prev) =>
-          prev.filter(
-            (id) => id !== store_id
-          )
-        );
-      } else {
-        const response = await fetch(
-          "http://192.168.1.8:3000/api/favorites",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body: JSON.stringify({
-              user_id: user.user_id,
-              store_id,
-            }),
-          }
-        );
-
+  const loadStores =
+    async () => {
+      try {
         const data =
-          await response.json();
+          await searchStores({
+            city_id,
+            locality_id,
+            neighborhood_id,
+            category_id,
+          });
 
-        if (!response.ok) {
-          return Alert.alert(
-            "Error",
-            data.message
-          );
-        }
+        console.log(
+          "STORES:",
+          data
+        );
 
-        setFavoriteStores((prev) => [
-          ...prev,
-          store_id,
-        ]);
+        setStores(data);
+      } catch (error) {
+        console.log(
+          "ERROR STORES:",
+          error
+        );
       }
-    } catch (error) {
-      console.log(error);
-
-      Alert.alert(
-        "Error",
-        "No se pudo conectar al servidor"
-      );
-    }
-  };
+    };
 
   return (
     <View
       style={{
         flex: 1,
         padding: 20,
-        backgroundColor: "#0D0D0D",
+        backgroundColor:
+          "#0D0D0D",
       }}
     >
       <Text
@@ -170,10 +100,14 @@ export default function StoreScreen({
       ) : (
         <FlatList
           data={stores}
-          keyExtractor={(item) =>
+          keyExtractor={(
+            item
+          ) =>
             item.store_id.toString()
           }
-          renderItem={({ item }) => (
+          renderItem={({
+            item,
+          }) => (
             <StoreCard
               store={item}
               isFavorite={favoriteStores.includes(
@@ -188,7 +122,8 @@ export default function StoreScreen({
                 navigation.navigate(
                   "StoreDetails",
                   {
-                    store: item,
+                    store:
+                      item,
                   }
                 )
               }

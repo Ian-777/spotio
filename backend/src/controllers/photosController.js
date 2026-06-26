@@ -12,8 +12,11 @@ const uploadPhoto = async (
   res
 ) => {
   try {
-    const { user_id, store_id } =
-      req.body;
+    const {
+      user_id,
+      store_id,
+      review_id,
+    } = req.body;
 
     if (!req.file) {
       return res.status(400).json({
@@ -28,6 +31,8 @@ const uploadPhoto = async (
       await addPhoto({
         user_id,
         store_id,
+        review_id:
+          review_id || null,
         image_url,
       });
 
@@ -95,7 +100,9 @@ const removePhoto = async (
       photo.image_url
     );
 
-    if (fs.existsSync(imagePath)) {
+    if (
+      fs.existsSync(imagePath)
+    ) {
       fs.unlinkSync(imagePath);
     }
 

@@ -44,22 +44,6 @@ export default function StoreHeader({
           {store.name}
         </Text>
 
-        <View style={styles.ratingContainer}>
-          <FontAwesome
-            name="star"
-            size={20}
-            color="#FACC15"
-          />
-
-          <Text style={styles.ratingText}>
-            {store.average_rating}
-
-            {"  "}(
-            {store.total_ratings}
-            {" "}
-            calificaciones)
-          </Text>
-        </View>
       </View>
     </View>
   );
@@ -94,15 +78,5 @@ const styles =
       fontWeight: "bold",
     },
 
-    ratingContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-
-    ratingText: {
-      color: "#FFFFFF",
-      marginLeft: 8,
-      fontSize: 16,
-      fontWeight: "600",
-    },
+    
   });
