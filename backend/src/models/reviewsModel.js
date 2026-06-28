@@ -4,16 +4,14 @@ const addReview = async ({
   user_id,
   store_id,
   comment,
-  photo_id = null,
 }) => {
   const query = `
     INSERT INTO reviews (
       user_id,
       store_id,
-      comment,
-      photo_id
+      comment
     )
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3)
 
     RETURNING *;
   `;
@@ -22,7 +20,6 @@ const addReview = async ({
     user_id,
     store_id,
     comment,
-    photo_id,
   ];
 
   const result = await pool.query(
@@ -37,14 +34,12 @@ const updateReview = async ({
   user_id,
   store_id,
   comment,
-  photo_id = null,
 }) => {
   const query = `
     UPDATE reviews
 
     SET
       comment = $3,
-      photo_id = $4,
       created_at = NOW()
 
     WHERE user_id = $1
@@ -57,7 +52,6 @@ const updateReview = async ({
     user_id,
     store_id,
     comment,
-    photo_id,
   ];
 
   const result = await pool.query(
@@ -100,9 +94,6 @@ const getStoreReviews = async (
       reviews.review_id,
       reviews.comment,
       reviews.created_at,
-      reviews.photo_id,
-
-      photos.image_url,
 
       users.user_id,
       users.name
@@ -111,9 +102,6 @@ const getStoreReviews = async (
 
     JOIN users
       ON reviews.user_id = users.user_id
-
-    LEFT JOIN photos
-      ON reviews.photo_id = photos.photo_id
 
     WHERE reviews.store_id = $1
 

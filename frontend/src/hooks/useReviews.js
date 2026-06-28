@@ -27,17 +27,20 @@ export default function useReviews(
   const [hasReview, setHasReview] =
     useState(false);
 
-  useEffect(() => {
-  if (
-    !store?.store_id ||
-    !user?.user_id
-  ) {
-    return;
-  }
+  const [reviewImages, setReviewImages] =
+    useState([]);
 
-  loadReviews();
-  loadMyReview();
-}, [store, user]);
+  useEffect(() => {
+    if (
+      !store?.store_id ||
+      !user?.user_id
+    ) {
+      return;
+    }
+
+    loadReviews();
+    loadMyReview();
+  }, [store, user]);
 
   const loadReviews = async () => {
     try {
@@ -91,7 +94,7 @@ export default function useReviews(
     };
 
   const submitReview =
-    async () => {
+    async (image = null) => {
       try {
         if (
           !reviewText.trim()
@@ -102,20 +105,25 @@ export default function useReviews(
           );
         }
 
-        await saveReview({
-          user_id:
-            user.user_id,
+        await saveReview(
+          {
+            user_id:
+              user.user_id,
 
-          store_id:
-            store.store_id,
+            store_id:
+              store.store_id,
 
-          comment:
-            reviewText,
-        });
+            comment:
+              reviewText,
+          },
+          image
+        );
 
         setHasReview(
           true
         );
+
+        setReviewImages([]);
 
         await loadReviews();
 
@@ -143,6 +151,8 @@ export default function useReviews(
 
         setReviewText("");
 
+        setReviewImages([]);
+
         setHasReview(
           false
         );
@@ -169,6 +179,10 @@ export default function useReviews(
     reviewText,
 
     setReviewText,
+
+    reviewImages,
+
+    setReviewImages,
 
     hasReview,
 

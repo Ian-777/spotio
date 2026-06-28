@@ -41,7 +41,8 @@ export async function saveReview(
   review,
   image = null
 ) {
-  const formData = new FormData();
+  const formData =
+    new FormData();
 
   formData.append(
     "user_id",
@@ -59,15 +60,18 @@ export async function saveReview(
   );
 
   if (image) {
-    formData.append("image", {
-      uri: image.uri,
-      type:
-        image.mimeType ||
-        "image/jpeg",
-      name:
-        image.fileName ||
-        `review_${Date.now()}.jpg`,
-    });
+    formData.append(
+      "image",
+      {
+        uri: image.uri,
+        type:
+          image.mimeType ||
+          "image/jpeg",
+        name:
+          image.fileName ||
+          `review_${Date.now()}.jpg`,
+      }
+    );
   }
 
   const response = await fetch(

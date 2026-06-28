@@ -89,25 +89,6 @@ const getPhotosByReview =
     return result.rows;
   };
 
-const getPhotoById = async (
-  photo_id
-) => {
-  const query = `
-    SELECT *
-
-    FROM photos
-
-    WHERE photo_id = $1;
-  `;
-
-  const result = await pool.query(
-    query,
-    [photo_id]
-  );
-
-  return result.rows[0];
-};
-
 const updatePhotoReview =
   async (
     photo_id,
@@ -153,14 +134,13 @@ const deletePhoto = async (
     [photo_id, user_id]
   );
 
-  return result.rows[0];
+    return result.rows[0];
 };
 
 module.exports = {
   addPhoto,
   getStorePhotos,
   getPhotosByReview,
-  getPhotoById,
   updatePhotoReview,
   deletePhoto,
 };

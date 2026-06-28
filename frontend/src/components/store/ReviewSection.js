@@ -1,4 +1,6 @@
-import React from "react";
+import React, {
+  useState,
+} from "react";
 
 import {
   View,
@@ -6,7 +8,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
+
+import API_URL from "../../config/api";
+
+import UploadPhotoButton from "./UploadPhotoButton";
 
 import useReviews from "../../hooks/useReviews";
 
@@ -14,6 +21,9 @@ export default function ReviewSection({
   store,
   user,
 }) {
+  const [photo, setPhoto] =
+    useState(null);
+
   const {
     reviews,
     reviewText,
@@ -41,9 +51,24 @@ export default function ReviewSection({
         multiline
       />
 
+      <UploadPhotoButton
+        onImageSelected={setPhoto}
+      />
+
+      {photo && (
+        <Image
+          source={{
+            uri: photo.uri,
+          }}
+          style={styles.preview}
+        />
+      )}
+
       <TouchableOpacity
         style={styles.button}
-        onPress={submitReview}
+        onPress={() =>
+          submitReview(photo)
+        }
       >
         <Text style={styles.buttonText}>
           {hasReview
@@ -102,6 +127,39 @@ export default function ReviewSection({
             >
               {review.comment}
             </Text>
+
+            {review.photos &&
+              review.photos.length >
+                0 && (
+                <View
+                  style={
+                    styles.photosRow
+                  }
+                >
+                  {review.photos.map(
+                    (
+                      photo
+                    ) => (
+                      <Image
+                        key={
+                          photo.photo_id
+                        }
+                        source={{
+                          uri:
+                            photo.image_url.startsWith(
+                              "http"
+                            )
+                              ? photo.image_url
+                              : `${API_URL}${photo.image_url}`,
+                        }}
+                        style={
+                          styles.reviewPhoto
+                        }
+                      />
+                    )
+                  )}
+                </View>
+              )}
           </View>
         ))
       )}
@@ -130,6 +188,15 @@ const styles =
       padding: 12,
       minHeight: 90,
       marginBottom: 15,
+    },
+
+    preview: {
+      width: 120,
+      height: 120,
+      borderRadius: 12,
+      marginTop: 15,
+      marginBottom: 15,
+      alignSelf: "center",
     },
 
     button: {
@@ -187,5 +254,19 @@ const styles =
     reviewText: {
       color: "#FFFFFF",
       lineHeight: 22,
+    },
+
+    photosRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      marginTop: 12,
+    },
+
+    reviewPhoto: {
+      width: 70,
+      height: 70,
+      borderRadius: 8,
+      marginRight: 8,
+      marginBottom: 8,
     },
   });

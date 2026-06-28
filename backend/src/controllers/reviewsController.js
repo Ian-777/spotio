@@ -6,6 +6,10 @@ const {
   deleteReview,
 } = require("../models/reviewsModel");
 
+const {
+  addPhoto,
+} = require("../models/photosModel");
+
 const createReview = async (
   req,
   res
@@ -15,7 +19,6 @@ const createReview = async (
       user_id,
       store_id,
       comment,
-      photo_id = null,
     } = req.body;
 
     const existingReview =
@@ -27,28 +30,46 @@ const createReview = async (
     let review;
 
     if (existingReview) {
-      review = await updateReview({
-        user_id,
-        store_id,
-        comment,
-        photo_id,
-      });
+      review =
+        await updateReview({
+          user_id,
+          store_id,
+          comment,
+        });
     } else {
-      review = await addReview({
+      review =
+        await addReview({
+          user_id,
+          store_id,
+          comment,
+        });
+    }
+
+    if (req.file) {
+      const image_url = `/uploads/${req.file.filename}`;
+
+      await addPhoto({
         user_id,
         store_id,
-        comment,
-        photo_id,
+        review_id:
+          review.review_id,
+        image_url,
       });
     }
 
     res.status(201).json(review);
+
   } catch (error) {
-    console.log(error);
+    console.error(
+      "========== ERROR CREATE REVIEW =========="
+    );
+
+    console.error(error);
+
+    console.error(error.stack);
 
     res.status(500).json({
-      message:
-        "Error al guardar reseña",
+      message: error.message,
     });
   }
 };
@@ -67,6 +88,7 @@ const getReviews = async (
       );
 
     res.json(reviews);
+
   } catch (error) {
     console.log(error);
 
@@ -94,6 +116,7 @@ const getMyReview = async (
       );
 
     res.json(review || null);
+
   } catch (error) {
     console.log(error);
 
@@ -121,6 +144,7 @@ const removeReview = async (
       );
 
     res.json(review);
+
   } catch (error) {
     console.log(error);
 

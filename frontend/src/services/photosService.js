@@ -4,7 +4,7 @@ export async function getStorePhotos(
   store
 ) {
   const response = await fetch(
-    `${API_URL}/api/photos/${store.store_id}`
+    `${API_URL}/api/photos/store/${store.store_id}`
   );
 
   if (!response.ok) {

@@ -11,53 +11,68 @@ import {
 
 import { AuthContext } from "../context/AuthContext";
 
-export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState("");
+import API_URL from "../config/api";
 
-  const [password, setPassword] = useState("");
+export default function LoginScreen({
+  navigation,
+}) {
+  const [email, setEmail] =
+    useState("");
 
-  const { login } = useContext(AuthContext);
+  const [
+    password,
+    setPassword,
+  ] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch(
-        "http://192.168.1.8:3000/api/auth/login",
-        {
-          method: "POST",
+  const { login } =
+    useContext(AuthContext);
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+  const handleLogin =
+    async () => {
+      try {
+        const response =
+          await fetch(
+            `${API_URL}/api/auth/login`,
+            {
+              method: "POST",
 
-          body: JSON.stringify({
-            email,
-            password,
-          }),
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body: JSON.stringify({
+                email,
+                password,
+              }),
+            }
+          );
+
+        const data =
+          await response.json();
+
+        console.log(data);
+
+        if (!response.ok) {
+          return Alert.alert(
+            "Error",
+            data.message
+          );
         }
-      );
 
-      const data = await response.json();
+        await login(
+          data.token,
+          data.user
+        );
+      } catch (error) {
+        console.log(error);
 
-      console.log(data);
-
-      if (!response.ok) {
-        return Alert.alert("Error", data.message);
+        Alert.alert(
+          "Error",
+          "No se pudo conectar al servidor"
+        );
       }
-
-      await login(
-    data.token,
-    data.user
-    );
-
-    } catch (error) {
-      console.log(error);
-
-      Alert.alert(
-        "Error",
-        "No se pudo conectar al servidor"
-      );
-    }
-  };
+    };
 
   return (
     <View style={styles.container}>
@@ -70,6 +85,8 @@ export default function LoginScreen({ navigation }) {
         placeholderTextColor="#A1A1AA"
         value={email}
         onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
         style={styles.input}
       />
 
@@ -78,7 +95,9 @@ export default function LoginScreen({ navigation }) {
         placeholderTextColor="#A1A1AA"
         secureTextEntry
         value={password}
-        onChangeText={setPassword}
+        onChangeText={
+          setPassword
+        }
         style={styles.input}
       />
 
@@ -86,62 +105,74 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={handleLogin}
       >
-        <Text style={styles.buttonText}>
+        <Text
+          style={styles.buttonText}
+        >
           Entrar
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("Register")}
+        onPress={() =>
+          navigation.navigate(
+            "Register"
+          )
+        }
       >
         <Text style={styles.link}>
-          ¿No tienes cuenta? Regístrate
+          ¿No tienes cuenta?
+          Regístrate
         </Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0D0D0D",
-    justifyContent: "center",
-    padding: 20,
-  },
+const styles =
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor:
+        "#0D0D0D",
+      justifyContent:
+        "center",
+      padding: 20,
+    },
 
-  title: {
-    color: "#FFFFFF",
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
-  },
+    title: {
+      color: "#FFFFFF",
+      fontSize: 28,
+      fontWeight: "bold",
+      marginBottom: 30,
+      textAlign: "center",
+    },
 
-  input: {
-    backgroundColor: "#1E1E1E",
-    color: "#FFFFFF",
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-  },
+    input: {
+      backgroundColor:
+        "#1E1E1E",
+      color: "#FFFFFF",
+      padding: 15,
+      borderRadius: 12,
+      marginBottom: 15,
+    },
 
-  button: {
-    backgroundColor: "#7C3AED",
-    padding: 15,
-    borderRadius: 12,
-    alignItems: "center",
-  },
+    button: {
+      backgroundColor:
+        "#7C3AED",
+      padding: 15,
+      borderRadius: 12,
+      alignItems: "center",
+    },
 
-  buttonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+    buttonText: {
+      color: "#FFFFFF",
+      fontWeight: "bold",
+      fontSize: 16,
+    },
 
-  link: {
-    color: "#3B82F6",
-    textAlign: "center",
-    marginTop: 20,
-  },
-});
+    link: {
+      color: "#3B82F6",
+      textAlign: "center",
+      marginTop: 20,
+    },
+  });

@@ -7,6 +7,8 @@ const upload = require("../config/multer");
 const {
   uploadPhoto,
   getPhotos,
+  getReviewPhotos,
+  linkPhotoToReview,
   removePhoto,
 } = require("../controllers/photosController");
 
@@ -17,8 +19,18 @@ router.post(
 );
 
 router.get(
-  "/:store_id",
+  "/store/:store_id",
   getPhotos
+);
+
+router.get(
+  "/review/:review_id",
+  getReviewPhotos
+);
+
+router.put(
+  "/:photo_id/review",
+  linkPhotoToReview
 );
 
 router.delete(
