@@ -89,7 +89,7 @@ const getUserReview = async (
 const getStoreReviews = async (
   store_id
 ) => {
-  const query = `
+  const reviewsQuery = `
     SELECT
       reviews.review_id,
       reviews.comment,
@@ -108,12 +108,40 @@ const getStoreReviews = async (
     ORDER BY reviews.created_at DESC;
   `;
 
-  const result = await pool.query(
-    query,
-    [store_id]
-  );
+  const reviewsResult =
+    await pool.query(
+      reviewsQuery,
+      [store_id]
+    );
 
-  return result.rows;
+  const reviews =
+    reviewsResult.rows;
+
+  for (const review of reviews) {
+    const photosQuery = `
+      SELECT
+        photo_id,
+        image_url,
+        created_at
+
+      FROM photos
+
+      WHERE review_id = $1
+
+      ORDER BY created_at ASC;
+    `;
+
+    const photosResult =
+      await pool.query(
+        photosQuery,
+        [review.review_id]
+      );
+
+    review.photos =
+      photosResult.rows;
+  }
+
+  return reviews;
 };
 
 const deleteReview = async (
