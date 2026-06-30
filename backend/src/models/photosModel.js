@@ -41,7 +41,6 @@ const getStorePhotos = async (
       photos.photo_id,
       photos.image_url,
       photos.created_at,
-      photos.review_id,
 
       users.user_id,
       users.name
@@ -52,6 +51,7 @@ const getStorePhotos = async (
       ON photos.user_id = users.user_id
 
     WHERE photos.store_id = $1
+      AND photos.review_id IS NULL
 
     ORDER BY photos.created_at DESC;
   `;
@@ -134,7 +134,7 @@ const deletePhoto = async (
     [photo_id, user_id]
   );
 
-    return result.rows[0];
+  return result.rows[0];
 };
 
 module.exports = {
