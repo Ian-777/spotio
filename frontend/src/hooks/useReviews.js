@@ -50,6 +50,7 @@ export default function useReviews(
         );
 
       setReviews(data);
+
     } catch (error) {
       console.log(error);
     }
@@ -75,6 +76,7 @@ export default function useReviews(
           setHasReview(
             true
           );
+
         } else {
           setReviewText("");
 
@@ -82,6 +84,7 @@ export default function useReviews(
             false
           );
         }
+
       } catch (error) {
         console.log(error);
 
@@ -94,7 +97,7 @@ export default function useReviews(
     };
 
   const submitReview =
-    async (image = null) => {
+    async (images = []) => {
       try {
         if (
           !reviewText.trim()
@@ -105,19 +108,46 @@ export default function useReviews(
           );
         }
 
-        await saveReview(
-          {
-            user_id:
-              user.user_id,
+        // Compatibilidad con una sola imagen
+        if (!Array.isArray(images)) {
+          images = images
+            ? [images]
+            : [];
+        }
 
-            store_id:
-              store.store_id,
+        // Si no hay imágenes
+        if (images.length === 0) {
+          await saveReview(
+            {
+              user_id:
+                user.user_id,
 
-            comment:
-              reviewText,
-          },
-          image
-        );
+              store_id:
+                store.store_id,
+
+              comment:
+                reviewText,
+            },
+            null
+          );
+        }
+
+        // Si hay imágenes
+        for (const image of images) {
+          await saveReview(
+            {
+              user_id:
+                user.user_id,
+
+              store_id:
+                store.store_id,
+
+              comment:
+                reviewText,
+            },
+            image
+          );
+        }
 
         setHasReview(
           true
@@ -131,6 +161,7 @@ export default function useReviews(
           "Éxito",
           "Reseña guardada correctamente."
         );
+
       } catch (error) {
         console.log(error);
 
@@ -163,6 +194,7 @@ export default function useReviews(
           "Éxito",
           "Reseña eliminada."
         );
+
       } catch (error) {
         console.log(error);
 
