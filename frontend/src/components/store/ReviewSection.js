@@ -17,6 +17,8 @@ import UploadPhotoButton from "./UploadPhotoButton";
 
 import useReviews from "../../hooks/useReviews";
 
+import { deletePhoto } from "../../services/photosService";
+
 export default function ReviewSection({
   store,
   user,
@@ -31,10 +33,28 @@ export default function ReviewSection({
     hasReview,
     submitReview,
     deleteReview,
+    reloadReviews,
   } = useReviews(
     store,
     user
   );
+
+
+  const removePhoto = async (photo_id) => {
+    try {
+      await deletePhoto(
+        photo_id,
+        user.user_id
+      );
+
+      await reloadReviews();
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   return (
     <View style={styles.container}>
@@ -52,10 +72,10 @@ export default function ReviewSection({
       />
 
       <UploadPhotoButton
-        onImageSelected={(image) =>
+        onImageSelected={(images) =>
           setPhotos((prev) => [
             ...prev,
-            image,
+            ...images,
           ])
         }
       />
@@ -147,32 +167,43 @@ export default function ReviewSection({
 
             {review.photos &&
               review.photos.length >
-                0 && (
+              0 && (
                 <View
                   style={
                     styles.photosRow
                   }
                 >
                   {review.photos.map(
-                    (
-                      photo
-                    ) => (
-                      <Image
-                        key={
-                          photo.photo_id
-                        }
-                        source={{
-                          uri:
-                            photo.image_url.startsWith(
-                              "http"
-                            )
-                              ? photo.image_url
-                              : `${API_URL}${photo.image_url}`,
-                        }}
-                        style={
-                          styles.reviewPhoto
-                        }
-                      />
+                    (photo) => (
+                      <View
+                        key={photo.photo_id}
+                        style={styles.photoContainer}
+                      >
+                        <Image
+                          source={{
+                            uri:
+                              photo.image_url.startsWith("http")
+                                ? photo.image_url
+                                : `${API_URL}${photo.image_url}`,
+                          }}
+                          style={styles.reviewPhoto}
+                        />
+
+                        {review.user_id === user.user_id && (
+                          <TouchableOpacity
+                            style={styles.deletePhotoButton}
+                            onPress={() =>
+                              removePhoto(photo.photo_id)
+                            }
+                          >
+                            <Text
+                              style={styles.deletePhotoText}
+                            >
+                              ✕
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     )
                   )}
                 </View>
@@ -285,11 +316,35 @@ const styles =
       marginTop: 12,
     },
 
+    photoContainer: {
+      position: "relative",
+      marginRight: 8,
+      marginBottom: 8,
+    },
+
     reviewPhoto: {
       width: 70,
       height: 70,
       borderRadius: 8,
       marginRight: 8,
       marginBottom: 8,
+    },
+
+    deletePhotoButton: {
+      position: "absolute",
+      top: -6,
+      right: -6,
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: "#EF4444",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    deletePhotoText: {
+      color: "#FFFFFF",
+      fontSize: 12,
+      fontWeight: "bold",
     },
   });

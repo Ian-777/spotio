@@ -18,16 +18,15 @@ export default function UploadPhotoButton({
 
     const result =
       await ImagePicker.launchImageLibraryAsync({
-        mediaTypes:
-          ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
+        mediaTypes: ["images"],
+        allowsEditing: false,
+        allowsMultipleSelection: true,
+        selectionLimit: 10,
         quality: 0.8,
       });
 
     if (!result.canceled) {
-      onImageSelected(
-        result.assets[0]
-      );
+      onImageSelected(result.assets);
     }
   };
 
@@ -47,7 +46,7 @@ export default function UploadPhotoButton({
           fontWeight: "bold",
         }}
       >
-        📷 Agregar foto
+        📷 Agregar fotos
       </Text>
     </TouchableOpacity>
   );
