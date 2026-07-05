@@ -20,6 +20,9 @@ import useReviews from "../../hooks/useReviews";
 
 import { deletePhoto } from "../../services/photosService";
 
+import * as ImagePicker from "expo-image-picker";
+import { Alert } from "react-native";
+
 export default function ReviewSection({
   store,
   user,
@@ -47,6 +50,35 @@ export default function ReviewSection({
     store,
     user
   );
+
+
+  const pickImages = async () => {
+    const { status } =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      return Alert.alert(
+        "Permiso requerido",
+        "Debes permitir acceso a la galería."
+      );
+    }
+
+    const result =
+      await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: false,
+        allowsMultipleSelection: true,
+        selectionLimit: 10,
+        quality: 0.8,
+      });
+
+    if (!result.canceled) {
+      setPhotos((prev) => [
+        ...prev,
+        ...result.assets,
+      ]);
+    }
+  };
 
 
   const removePhoto = async (photo_id) => {
@@ -80,50 +112,47 @@ export default function ReviewSection({
         multiline
       />
 
-      <UploadPhotoButton
-        onImageSelected={(images) =>
-          setPhotos((prev) => [
-            ...prev,
-            ...images,
-          ])
-        }
-      />
 
-      {photos.length > 0 && (
-        <View style={styles.previewRow}>
-          {photos.map(
-            (
-              photo,
-              index
-            ) => (
-              <View
-                key={index}
-                style={styles.previewContainer}
-              >
-                <Image
-                  source={{
-                    uri: photo.uri,
-                  }}
-                  style={styles.preview}
-                />
 
-                <TouchableOpacity
-                  style={styles.removePreviewButton}
-                  onPress={() =>
-                    removePreviewPhoto(index)
-                  }
-                >
-                  <Ionicons
-                    name="close"
-                    size={18}
-                    color="#FFFFFF"
-                  />
-                </TouchableOpacity>
-              </View>
-            )
-          )}
-        </View>
-      )}
+      <View style={styles.previewRow}>
+
+        <TouchableOpacity
+          style={styles.addPhotoButton}
+          onPress={pickImages}
+        >
+          <Ionicons
+            name="add"
+            size={34}
+            color="#7C3AED"
+          />
+        </TouchableOpacity>
+
+        {photos.map((photo, index) => (
+          <View
+            key={index}
+            style={styles.previewContainer}
+          >
+            <Image
+              source={{ uri: photo.uri }}
+              style={styles.preview}
+            />
+
+            <TouchableOpacity
+              style={styles.removePreviewButton}
+              onPress={() =>
+                removePreviewPhoto(index)
+              }
+            >
+              <Ionicons
+                name="close"
+                size={18}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
+
+      </View>
 
       <TouchableOpacity
         style={styles.button}
@@ -307,16 +336,16 @@ const styles =
     },
 
     buttonText: {
-  color: "#FFFFFF",
-  fontWeight: "700",
-  fontSize: 16,
-},
+      color: "#FFFFFF",
+      fontWeight: "700",
+      fontSize: 16,
+    },
 
     deleteButton: {
-  alignSelf: "flex-end",
-  marginTop: 6,
-  marginBottom: 24,
-},
+      alignSelf: "flex-end",
+      marginTop: 6,
+      marginBottom: 24,
+    },
 
     deleteButtonText: {
       color: "#EF4444",
@@ -391,5 +420,19 @@ const styles =
       color: "#FFFFFF",
       fontSize: 12,
       fontWeight: "bold",
+    },
+
+    addPhotoButton: {
+      width: 90,
+      height: 90,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: "#7C3AED",
+      borderStyle: "dashed",
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 10,
+      marginBottom: 10,
+      backgroundColor: "#181818",
     },
   });
