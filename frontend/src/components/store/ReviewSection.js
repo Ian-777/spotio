@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import API_URL from "../../config/api";
 
@@ -25,6 +26,14 @@ export default function ReviewSection({
 }) {
   const [photos, setPhotos] =
     useState([]);
+
+  const removePreviewPhoto = (indexToRemove) => {
+    setPhotos((prev) =>
+      prev.filter(
+        (_, index) => index !== indexToRemove
+      )
+    );
+  };
 
   const {
     reviews,
@@ -87,13 +96,30 @@ export default function ReviewSection({
               photo,
               index
             ) => (
-              <Image
+              <View
                 key={index}
-                source={{
-                  uri: photo.uri,
-                }}
-                style={styles.preview}
-              />
+                style={styles.previewContainer}
+              >
+                <Image
+                  source={{
+                    uri: photo.uri,
+                  }}
+                  style={styles.preview}
+                />
+
+                <TouchableOpacity
+                  style={styles.removePreviewButton}
+                  onPress={() =>
+                    removePreviewPhoto(index)
+                  }
+                >
+                  <Ionicons
+                    name="close"
+                    size={18}
+                    color="#FFFFFF"
+                  />
+                </TouchableOpacity>
+              </View>
             )
           )}
         </View>
@@ -243,6 +269,25 @@ const styles =
       flexWrap: "wrap",
       marginTop: 15,
       marginBottom: 15,
+    },
+
+    previewContainer: {
+      position: "relative",
+      marginRight: 10,
+      marginBottom: 10,
+    },
+
+    removePreviewButton: {
+      position: "absolute",
+      top: -6,
+      right: -6,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: "#EF4444",
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 3,
     },
 
     preview: {
