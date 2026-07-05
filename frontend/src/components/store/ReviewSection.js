@@ -127,11 +127,10 @@ export default function ReviewSection({
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() =>
-          submitReview(
-            photos
-          )
-        }
+        onPress={async () => {
+          await submitReview(photos);
+          setPhotos([]);
+        }}
       >
         <Text style={styles.buttonText}>
           {hasReview
@@ -299,24 +298,25 @@ const styles =
     },
 
     button: {
-      backgroundColor:
-        "#7C3AED",
-      borderRadius: 12,
-      padding: 14,
+      backgroundColor: "#7C3AED",
+      borderRadius: 14,
+      paddingVertical: 15,
       alignItems: "center",
-      marginBottom: 10,
+      marginTop: 2,
+      marginBottom: 14,
     },
 
     buttonText: {
-      color: "#FFFFFF",
-      fontWeight: "bold",
-      fontSize: 16,
-    },
+  color: "#FFFFFF",
+  fontWeight: "700",
+  fontSize: 16,
+},
 
     deleteButton: {
-      alignSelf: "flex-end",
-      marginBottom: 20,
-    },
+  alignSelf: "flex-end",
+  marginTop: 6,
+  marginBottom: 24,
+},
 
     deleteButtonText: {
       color: "#EF4444",

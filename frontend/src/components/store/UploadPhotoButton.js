@@ -1,4 +1,11 @@
-import { TouchableOpacity, Text, Alert } from "react-native";
+import React from "react";
+
+import {
+  TouchableOpacity,
+  Text,
+  Alert,
+  StyleSheet,
+} from "react-native";
 
 import * as ImagePicker from "expo-image-picker";
 
@@ -33,21 +40,28 @@ export default function UploadPhotoButton({
   return (
     <TouchableOpacity
       onPress={pickImage}
-      style={{
-        backgroundColor: "#7C3AED",
-        padding: 12,
-        borderRadius: 12,
-        alignItems: "center",
-      }}
+      style={styles.button}
+      activeOpacity={0.8}
     >
-      <Text
-        style={{
-          color: "#FFFFFF",
-          fontWeight: "bold",
-        }}
-      >
+      <Text style={styles.text}>
         📷 Agregar fotos
       </Text>
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#5B21B6",
+    borderRadius: 12,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginBottom: 14,
+  },
+
+  text: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+});
