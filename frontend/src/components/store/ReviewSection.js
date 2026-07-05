@@ -21,8 +21,8 @@ export default function ReviewSection({
   store,
   user,
 }) {
-  const [photo, setPhoto] =
-    useState(null);
+  const [photos, setPhotos] =
+    useState([]);
 
   const {
     reviews,
@@ -52,22 +52,39 @@ export default function ReviewSection({
       />
 
       <UploadPhotoButton
-        onImageSelected={setPhoto}
+        onImageSelected={(image) =>
+          setPhotos((prev) => [
+            ...prev,
+            image,
+          ])
+        }
       />
 
-      {photo && (
-        <Image
-          source={{
-            uri: photo.uri,
-          }}
-          style={styles.preview}
-        />
+      {photos.length > 0 && (
+        <View style={styles.previewRow}>
+          {photos.map(
+            (
+              photo,
+              index
+            ) => (
+              <Image
+                key={index}
+                source={{
+                  uri: photo.uri,
+                }}
+                style={styles.preview}
+              />
+            )
+          )}
+        </View>
       )}
 
       <TouchableOpacity
         style={styles.button}
         onPress={() =>
-          submitReview(photo)
+          submitReview(
+            photos
+          )
         }
       >
         <Text style={styles.buttonText}>
@@ -190,13 +207,19 @@ const styles =
       marginBottom: 15,
     },
 
-    preview: {
-      width: 120,
-      height: 120,
-      borderRadius: 12,
+    previewRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
       marginTop: 15,
       marginBottom: 15,
-      alignSelf: "center",
+    },
+
+    preview: {
+      width: 90,
+      height: 90,
+      borderRadius: 12,
+      marginRight: 10,
+      marginBottom: 10,
     },
 
     button: {
