@@ -1,5 +1,7 @@
 import React, {
   useState,
+  useEffect,
+  useRef,
 } from "react";
 
 import {
@@ -9,17 +11,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Animated,
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
-
 import API_URL from "../../config/api";
-
 import UploadPhotoButton from "./UploadPhotoButton";
-
 import useReviews from "../../hooks/useReviews";
-
 import { deletePhoto } from "../../services/photosService";
-
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 
@@ -29,6 +28,29 @@ export default function ReviewSection({
 }) {
   const [photos, setPhotos] =
     useState([]);
+
+  const pulse =
+    useRef(
+      new Animated.Value(1)
+    ).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, {
+          toValue: 1.15,
+          duration: 900,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulse, {
+          toValue: 1,
+          duration: 900,
+          useNativeDriver: true,
+        }),
+        Animated.delay(1800),
+      ])
+    ).start();
+  }, []);
 
   const removePreviewPhoto = (indexToRemove) => {
     setPhotos((prev) =>
@@ -128,11 +150,21 @@ export default function ReviewSection({
             style={styles.addPhotoButton}
             onPress={pickImages}
           >
-            <Ionicons
-              name="add"
-              size={34}
-              color="#7C3AED"
-            />
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    scale: pulse,
+                  },
+                ],
+              }}
+            >
+              <Ionicons
+                name="add"
+                size={34}
+                color="#7C3AED"
+              />
+            </Animated.View>
           </TouchableOpacity>
 
           {photos.length === 0 && (
