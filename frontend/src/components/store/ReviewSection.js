@@ -114,7 +114,13 @@ export default function ReviewSection({
 
 
 
-      <View style={styles.previewRow}>
+      <View
+        style={[
+          styles.previewRow,
+          photos.length === 0 &&
+          styles.previewRowEmpty,
+        ]}
+      >
 
         <TouchableOpacity
           style={styles.addPhotoButton}
@@ -423,17 +429,21 @@ const styles =
     },
 
     addPhotoButton: {
-  width: 72,
-  height: 72,
-  borderRadius: 18,
-  borderWidth: 2,
-  borderColor: "#7C3AED",
-  borderStyle: "dashed",
-  justifyContent: "center",
-  alignItems: "center",
-  marginRight: 12,
-  marginBottom: 10,
-  backgroundColor: "#181818",
-  alignSelf: "center",
-},
+      width: 72,
+      height: 72,
+      borderRadius: 18,
+      borderWidth: 2,
+      borderColor: "#7C3AED",
+      borderStyle: "dashed",
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 12,
+      marginBottom: 10,
+      backgroundColor: "#181818",
+      alignSelf: "center",
+    },
+
+    previewRowEmpty: {
+      justifyContent: "center",
+    },
   });

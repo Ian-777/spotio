@@ -21,3 +21,10 @@ WHERE store_id = 2;
 ***ADD STORE*****
 INSERT INTO stores (name, address, city_id, locality_id, category_id, image_url) 
 VALUES ('Jardin Tragos y Pasteles', 'Calle 67 #4A-11', 1, 1, 1, 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/ab/96/e9/caption.jpg?w=1000&h=-1&s=1');
+
+*****GIT******
+---restore version
+git status
+git log --oneline -10
+git reset --hard 1ede311
+git push --force origin main
