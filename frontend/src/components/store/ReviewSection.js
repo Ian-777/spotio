@@ -122,16 +122,32 @@ export default function ReviewSection({
         ]}
       >
 
-        <TouchableOpacity
-          style={styles.addPhotoButton}
-          onPress={pickImages}
-        >
-          <Ionicons
-            name="add"
-            size={34}
-            color="#7C3AED"
-          />
-        </TouchableOpacity>
+        <View style={styles.addPhotoContainer}>
+
+          <TouchableOpacity
+            style={styles.addPhotoButton}
+            onPress={pickImages}
+          >
+            <Ionicons
+              name="add"
+              size={34}
+              color="#7C3AED"
+            />
+          </TouchableOpacity>
+
+          {photos.length === 0 && (
+            <>
+              <Text style={styles.addPhotoTitle}>
+                Agregar fotos
+              </Text>
+
+              <Text style={styles.addPhotoSubtitle}>
+                Puedes subir hasta 10 fotos
+              </Text>
+            </>
+          )}
+
+        </View>
 
         {photos.map((photo, index) => (
           <View
@@ -445,5 +461,24 @@ const styles =
 
     previewRowEmpty: {
       justifyContent: "center",
+    },
+
+    addPhotoContainer: {
+      alignItems: "center",
+      marginRight: 18,
+    },
+
+    addPhotoTitle: {
+      color: "#FFFFFF",
+      fontSize: 15,
+      fontWeight: "700",
+      marginTop: 10,
+    },
+
+    addPhotoSubtitle: {
+      color: "#8A8A8A",
+      fontSize: 12,
+      marginTop: 3,
+      textAlign: "center",
     },
   });
