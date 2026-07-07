@@ -273,6 +273,16 @@ export default function ReviewSection({
               {review.comment}
             </Text>
 
+            <View
+              style={styles.likesContainer}
+            >
+              <Text
+                style={styles.likesText}
+              >
+                ❤️ {review.likes}
+              </Text>
+            </View>
+
             {review.photos &&
               review.photos.length >
               0 && (
@@ -436,6 +446,16 @@ const styles =
     reviewText: {
       color: "#FFFFFF",
       lineHeight: 22,
+    },
+
+    likesContainer: {
+      marginTop: 10,
+    },
+
+    likesText: {
+      color: "#AAAAAA",
+      fontSize: 14,
+      fontWeight: "600",
     },
 
     photosRow: {
