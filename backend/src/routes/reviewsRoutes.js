@@ -26,13 +26,15 @@ router.delete(
   removeReview
 );
 
+// Obtener la reseña del usuario autenticado
 router.get(
-  "/:store_id/:user_id",
+  "/mine/:store_id/:user_id",
   getMyReview
 );
 
+// Obtener todas las reseñas de un establecimiento
 router.get(
-  "/:store_id",
+  "/:store_id/:user_id",
   getReviews
 );
 

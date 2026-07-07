@@ -1,10 +1,11 @@
 import API_URL from "../config/api";
 
 export async function getStoreReviews(
-  store_id
+  store_id,
+  user_id
 ) {
   const response = await fetch(
-    `${API_URL}/api/reviews/${store_id}`
+    `${API_URL}/api/reviews/${store_id}/${user_id}`
   );
 
   if (!response.ok) {
@@ -21,7 +22,7 @@ export async function getUserReview(
   user_id
 ) {
   const response = await fetch(
-    `${API_URL}/api/reviews/${store_id}/${user_id}`
+    `${API_URL}/api/reviews/mine/${store_id}/${user_id}`
   );
 
   if (response.status === 404) {

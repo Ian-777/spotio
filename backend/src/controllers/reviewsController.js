@@ -83,12 +83,15 @@ const getReviews = async (
   res
 ) => {
   try {
-    const { store_id } =
-      req.params;
+    const {
+      store_id,
+      user_id,
+    } = req.params;
 
     const reviews =
       await getStoreReviews(
-        store_id
+        store_id,
+        user_id
       );
 
     res.json(reviews);

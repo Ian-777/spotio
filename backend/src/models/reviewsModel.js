@@ -87,7 +87,8 @@ const getUserReview = async (
 };
 
 const getStoreReviews = async (
-  store_id
+  store_id,
+  user_id
 ) => {
   const reviewsQuery = `
   SELECT
@@ -98,8 +99,15 @@ const getStoreReviews = async (
     users.user_id,
     users.name,
 
-    COUNT(review_likes.like_id)::INTEGER
-      AS likes
+    COUNT(DISTINCT review_likes.like_id)::INTEGER
+      AS likes,
+
+    EXISTS (
+      SELECT 1
+      FROM review_likes rl
+      WHERE rl.review_id = reviews.review_id
+        AND rl.user_id = $2
+    ) AS liked
 
   FROM reviews
 
@@ -120,10 +128,13 @@ const getStoreReviews = async (
 `;
 
   const reviewsResult =
-    await pool.query(
-      reviewsQuery,
-      [store_id]
-    );
+  await pool.query(
+    reviewsQuery,
+    [
+      store_id,
+      user_id,
+    ]
+  );
 
   const reviews =
     reviewsResult.rows;
