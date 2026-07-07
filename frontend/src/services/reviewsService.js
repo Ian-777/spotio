@@ -118,3 +118,87 @@ export async function deleteReview(
 
   return data;
 }
+
+export async function likeReview(
+  review_id,
+  user_id
+) {
+  const response = await fetch(
+    `${API_URL}/api/reviews/like`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        review_id,
+        user_id,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "No se pudo dar like."
+    );
+  }
+
+  return data;
+}
+
+export async function unlikeReview(
+  review_id,
+  user_id
+) {
+  const response = await fetch(
+    `${API_URL}/api/reviews/like`,
+    {
+      method: "DELETE",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        review_id,
+        user_id,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+        "No se pudo quitar el like."
+    );
+  }
+
+  return data;
+}
+
+export async function getReviewLikes(
+  review_id
+) {
+  const response = await fetch(
+    `${API_URL}/api/reviews/likes/${review_id}`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "No se pudieron obtener los likes."
+    );
+  }
+
+  return await response.json();
+}

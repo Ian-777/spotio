@@ -4,6 +4,10 @@ const {
   getUserReview,
   getStoreReviews,
   deleteReview,
+
+  addLike,
+  removeLike,
+  getLikesByReview,
 } = require("../models/reviewsModel");
 
 const {
@@ -155,9 +159,96 @@ const removeReview = async (
   }
 };
 
+const likeReview = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      review_id,
+      user_id,
+    } = req.body;
+
+    const like =
+      await addLike(
+        review_id,
+        user_id
+      );
+
+    res.status(201).json(like);
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+  }
+};
+
+const unlikeReview = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      review_id,
+      user_id,
+    } = req.body;
+
+    const like =
+      await removeLike(
+        review_id,
+        user_id
+      );
+
+    res.json(like);
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+  }
+};
+
+const getLikes = async (
+  req,
+  res
+) => {
+  try {
+    const { review_id } =
+      req.params;
+
+    const total =
+      await getLikesByReview(
+        review_id
+      );
+
+    res.json({
+      total,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+  }
+};
+
 module.exports = {
   createReview,
   getReviews,
   getMyReview,
   removeReview,
+
+  likeReview,
+  unlikeReview,
+  getLikes,
 };

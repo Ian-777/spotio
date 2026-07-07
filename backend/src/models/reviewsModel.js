@@ -90,23 +90,34 @@ const getStoreReviews = async (
   store_id
 ) => {
   const reviewsQuery = `
-    SELECT
-      reviews.review_id,
-      reviews.comment,
-      reviews.created_at,
+  SELECT
+    reviews.review_id,
+    reviews.comment,
+    reviews.created_at,
 
-      users.user_id,
-      users.name
+    users.user_id,
+    users.name,
 
-    FROM reviews
+    COUNT(review_likes.like_id)::INTEGER
+      AS likes
 
-    JOIN users
-      ON reviews.user_id = users.user_id
+  FROM reviews
 
-    WHERE reviews.store_id = $1
+  JOIN users
+    ON reviews.user_id = users.user_id
 
-    ORDER BY reviews.created_at DESC;
-  `;
+  LEFT JOIN review_likes
+    ON reviews.review_id =
+       review_likes.review_id
+
+  WHERE reviews.store_id = $1
+
+  GROUP BY
+    reviews.review_id,
+    users.user_id
+
+  ORDER BY reviews.created_at DESC;
+`;
 
   const reviewsResult =
     await pool.query(
@@ -168,10 +179,83 @@ const deleteReview = async (
   return result.rows[0];
 };
 
+const addLike = async (
+  review_id,
+  user_id
+) => {
+  const query = `
+    INSERT INTO review_likes (
+      review_id,
+      user_id
+    )
+
+    VALUES ($1, $2)
+
+    RETURNING *;
+  `;
+
+  const result = await pool.query(
+    query,
+    [
+      review_id,
+      user_id,
+    ]
+  );
+
+  return result.rows[0];
+};
+
+const removeLike = async (
+  review_id,
+  user_id
+) => {
+  const query = `
+    DELETE FROM review_likes
+
+    WHERE review_id = $1
+      AND user_id = $2
+
+    RETURNING *;
+  `;
+
+  const result = await pool.query(
+    query,
+    [
+      review_id,
+      user_id,
+    ]
+  );
+
+  return result.rows[0];
+};
+
+const getLikesByReview = async (
+  review_id
+) => {
+  const query = `
+    SELECT COUNT(*)::INTEGER AS total
+
+    FROM review_likes
+
+    WHERE review_id = $1;
+  `;
+
+  const result = await pool.query(
+    query,
+    [review_id]
+  );
+
+  return result.rows[0].total;
+};
+
 module.exports = {
   addReview,
   updateReview,
   getUserReview,
   getStoreReviews,
   deleteReview,
+
+  addLike,
+  removeLike,
+  getLikesByReview,
 };

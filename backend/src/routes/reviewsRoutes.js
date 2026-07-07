@@ -9,6 +9,10 @@ const {
   getReviews,
   getMyReview,
   removeReview,
+
+  likeReview,
+  unlikeReview,
+  getLikes,
 } = require("../controllers/reviewsController");
 
 router.post(
@@ -30,6 +34,21 @@ router.get(
 router.get(
   "/:store_id",
   getReviews
+);
+
+router.post(
+  "/like",
+  likeReview
+);
+
+router.delete(
+  "/like",
+  unlikeReview
+);
+
+router.get(
+  "/likes/:review_id",
+  getLikes
 );
 
 module.exports = router;
