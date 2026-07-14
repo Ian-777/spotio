@@ -12,16 +12,28 @@ import {
   Alert,
 } from "react-native";
 
-import { useFocusEffect } from "@react-navigation/native";
+import {
+  useFocusEffect,
+} from "@react-navigation/native";
 
 import StoreCard from "../components/cards/StoreCard";
 
-import { AuthContext } from "../context/AuthContext";
+import {
+  AuthContext,
+} from "../context/AuthContext";
+
+import {
+  getFavorites,
+  addFavorite,
+  removeFavorite,
+} from "../services/favoritesService";
 
 export default function FavoritesScreen() {
-  const { user } = useContext(AuthContext);
+  const { user } =
+    useContext(AuthContext);
 
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] =
+    useState([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,95 +41,67 @@ export default function FavoritesScreen() {
     }, [])
   );
 
-  const loadFavorites = async () => {
-    try {
-      const response = await fetch(
-        `http://192.168.1.8:3000/api/favorites/${user.user_id}`
-      );
+  const loadFavorites =
+    async () => {
+      try {
+        const data =
+          await getFavorites(
+            user.user_id
+          );
 
-      const data = await response.json();
+        const favoritesWithState =
+          data.map((item) => ({
+            ...item,
+            isFavorite: true,
+          }));
 
-      setFavorites(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const toggleFavorite = async (
-    store_id,
-    isFavorite
-  ) => {
-    try {
-      if (isFavorite) {
-        const response = await fetch(
-          `http://192.168.1.8:3000/api/favorites/${user.user_id}/${store_id}`,
-          {
-            method: "DELETE",
-          }
+        setFavorites(
+          favoritesWithState
         );
 
-        if (!response.ok) {
-          return Alert.alert(
-            "Error",
-            "No se pudo eliminar favorito"
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+  const toggleFavorite =
+    async (
+      store_id,
+      isFavorite
+    ) => {
+      try {
+        if (isFavorite) {
+          await removeFavorite(
+            user.user_id,
+            store_id
           );
+
+          setFavorites((prev) =>
+            prev.filter(
+              (item) =>
+                item.store_id !==
+                store_id
+            )
+          );
+
+        } else {
+          await addFavorite(
+            user.user_id,
+            store_id
+          );
+
+          await loadFavorites();
         }
 
-        setFavorites((prev) =>
-          prev.map((item) =>
-            item.store_id === store_id
-              ? {
-                  ...item,
-                  isFavorite: false,
-                }
-              : item
-          )
-        );
-      } else {
-        const response = await fetch(
-          "http://192.168.1.8:3000/api/favorites",
-          {
-            method: "POST",
+      } catch (error) {
+        console.log(error);
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body: JSON.stringify({
-              user_id: user.user_id,
-              store_id,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          return Alert.alert(
-            "Error",
-            "No se pudo agregar favorito"
-          );
-        }
-
-        setFavorites((prev) =>
-          prev.map((item) =>
-            item.store_id === store_id
-              ? {
-                  ...item,
-                  isFavorite: true,
-                }
-              : item
-          )
+        Alert.alert(
+          "Error",
+          error.message
         );
       }
-    } catch (error) {
-      console.log(error);
-
-      Alert.alert(
-        "Error",
-        "No se pudo conectar al servidor"
-      );
-    }
-  };
+    };
 
   return (
     <View style={styles.container}>
@@ -139,12 +123,12 @@ export default function FavoritesScreen() {
             <StoreCard
               store={item}
               isFavorite={
-                item.isFavorite !== false
+                item.isFavorite
               }
               onFavorite={() =>
                 toggleFavorite(
                   item.store_id,
-                  item.isFavorite !== false
+                  item.isFavorite
                 )
               }
             />
@@ -171,5 +155,7 @@ const styles = StyleSheet.create({
 
   empty: {
     color: "#A1A1AA",
+    textAlign: "center",
+    marginTop: 40,
   },
-});
+}); 
