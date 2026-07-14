@@ -38,6 +38,9 @@ export default function ReviewSection({
   const [selectedImage, setSelectedImage] =
     useState(0);
 
+  const [viewerImages, setViewerImages] =
+    useState([]);
+
   const pulse =
     useRef(
       new Animated.Value(1)
@@ -133,6 +136,15 @@ export default function ReviewSection({
     index
   ) => {
 
+    const formattedPhotos =
+      photos.map((photo) => ({
+        uri: photo.image_url.startsWith("http")
+          ? photo.image_url
+          : `${API_URL}${photo.image_url}`,
+      }));
+
+    setViewerImages(formattedPhotos);
+
     setSelectedImage(index);
 
     setViewerVisible(true);
@@ -202,18 +214,8 @@ export default function ReviewSection({
 
           <PhotoViewer
             visible={viewerVisible}
+            images={viewerImages}
             imageIndex={selectedImage}
-            images={
-              reviews
-                .flatMap((review) =>
-                  review.photos || []
-                )
-                .map((photo) => ({
-                  uri: photo.image_url.startsWith("http")
-                    ? photo.image_url
-                    : `${API_URL}${photo.image_url}`,
-                }))
-            }
             onRequestClose={() =>
               setViewerVisible(false)
             }
@@ -329,7 +331,7 @@ export default function ReviewSection({
                   }
                 >
                   {review.photos.map(
-                    (photo) => (
+                    (photo, index) => (
                       <View
                         key={photo.photo_id}
                         style={styles.photoContainer}
@@ -338,10 +340,7 @@ export default function ReviewSection({
                           onPress={() =>
                             openPhotoViewer(
                               review.photos,
-                              review.photos.findIndex(
-                                (p) =>
-                                  p.photo_id === photo.photo_id
-                              )
+                              index
                             )
                           }
                         >
