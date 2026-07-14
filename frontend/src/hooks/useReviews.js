@@ -12,6 +12,8 @@ import {
   getUserReview,
   saveReview,
   deleteReview,
+  likeReview,
+  unlikeReview,
 } from "../services/reviewsService";
 
 export default function useReviews(
@@ -45,10 +47,10 @@ export default function useReviews(
   const loadReviews = async () => {
     try {
       const data =
-  await getStoreReviews(
-    store.store_id,
-    user.user_id
-  );
+        await getStoreReviews(
+          store.store_id,
+          user.user_id
+        );
 
       setReviews(data);
 
@@ -206,6 +208,90 @@ export default function useReviews(
       }
     };
 
+  const toggleLike = async (
+    review_id
+  ) => {
+
+    const review =
+      reviews.find(
+        (r) =>
+          r.review_id === review_id
+      );
+
+    if (!review) return;
+
+    const liked =
+      review.liked;
+
+    setReviews((prev) =>
+      prev.map((r) => {
+
+        if (
+          r.review_id !== review_id
+        )
+          return r;
+
+        return {
+          ...r,
+
+          liked: !liked,
+
+          likes: liked
+            ? r.likes - 1
+            : r.likes + 1,
+        };
+      })
+    );
+
+    try {
+
+      if (liked) {
+
+        await unlikeReview(
+          review_id,
+          user.user_id
+        );
+
+      } else {
+
+        await likeReview(
+          review_id,
+          user.user_id
+        );
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      setReviews((prev) =>
+        prev.map((r) => {
+
+          if (
+            r.review_id !== review_id
+          )
+            return r;
+
+          return {
+            ...r,
+
+            liked,
+
+            likes: review.likes,
+          };
+        })
+      );
+
+      Alert.alert(
+        "Error",
+        "No fue posible actualizar el like."
+      );
+
+    }
+
+  };
+
   return {
     reviews,
 
@@ -226,5 +312,7 @@ export default function useReviews(
 
     reloadReviews:
       loadReviews,
+
+    toggleLike,
   };
 }
