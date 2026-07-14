@@ -1,100 +1,102 @@
 import React, {
-  useRef,
+    useRef,
 } from "react";
 
 import {
-  Animated,
-  TouchableOpacity,
-  Text,
+    Animated,
+    TouchableOpacity,
+    Text,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 export default function LikeButton({
-  liked,
-  likes,
-  onPress,
+    liked,
+    likes,
+    onPress,
 }) {
 
-  const scale =
-    useRef(
-      new Animated.Value(1)
-    ).current;
+    const scale =
+        useRef(
+            new Animated.Value(1)
+        ).current;
 
-  const handlePress = () => {
+    const handlePress = () => {
 
-    Animated.sequence([
-      Animated.timing(scale, {
-        toValue: 1.25,
-        duration: 120,
-        useNativeDriver: true,
-      }),
+        Animated.sequence([
+            Animated.spring(scale, {
+                toValue: 1.35,
+                friction: 3,
+                tension: 180,
+                useNativeDriver: true,
+            }),
 
-      Animated.timing(scale, {
-        toValue: 1,
-        duration: 120,
-        useNativeDriver: true,
-      }),
-    ]).start();
+            Animated.spring(scale, {
+                toValue: 1,
+                friction: 4,
+                tension: 160,
+                useNativeDriver: true,
+            }),
+        ]).start();
 
-    onPress();
+        onPress();
 
-  };
+    };
 
-  return (
-    <TouchableOpacity
-      onPress={handlePress}
-      activeOpacity={0.8}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 10,
-      }}
-    >
+    return (
+        <TouchableOpacity
+            onPress={handlePress}
+            activeOpacity={0.8}
+            style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 10,
+            }}
+        >
 
-      <Animated.View
-        style={{
-          transform: [
-            {
-              scale,
-            },
-          ],
-        }}
-      >
+            <Animated.View
+                style={{
+                    transform: [
+                        {
+                            scale,
+                        },
+                    ],
+                }}
+            >
 
-        <Ionicons
-          name={
-            liked
-              ? "heart"
-              : "heart-outline"
-          }
-          size={20}
-          color={
-            liked
-              ? "#EF4444"
-              : "#AAAAAA"
-          }
-        />
+                <Ionicons
+                    name={
+                        liked
+                            ? "heart"
+                            : "heart-outline"
+                    }
+                    size={20}
+                    color={
+                        liked
+                            ? "#EF4444"
+                            : "#AAAAAA"
+                    }
+                />
 
-      </Animated.View>
+            </Animated.View>
 
-      <Text
-        style={{
-          color: liked
-            ? "#EF4444"
-            : "#AAAAAA",
+            <Text
+                style={{
+                    color: liked
+                        ? "#EF4444"
+                        : "#AAAAAA",
 
-          marginLeft: 6,
+                    marginLeft: 6,
 
-          fontWeight: "600",
+                    fontWeight: "600",
 
-          fontSize: 14,
-        }}
-      >
-        {likes}
-      </Text>
+                    fontSize: 14,
+                }}
+            >
+                {likes}
+            </Text>
 
-    </TouchableOpacity>
-  );
+        </TouchableOpacity>
+    );
 
 }
