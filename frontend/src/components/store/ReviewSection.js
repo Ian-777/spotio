@@ -21,6 +21,7 @@ import useReviews from "../../hooks/useReviews";
 import { deletePhoto } from "../../services/photosService";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
+import LikeButton from "../review/LikeButton";
 
 export default function ReviewSection({
   store,
@@ -60,19 +61,19 @@ export default function ReviewSection({
     );
   };
 
-const {
-  reviews,
-  reviewText,
-  setReviewText,
-  hasReview,
-  submitReview,
-  deleteReview,
-  reloadReviews,
-  toggleLike,
-} = useReviews(
-  store,
-  user
-);
+  const {
+    reviews,
+    reviewText,
+    setReviewText,
+    hasReview,
+    submitReview,
+    deleteReview,
+    reloadReviews,
+    toggleLike,
+  } = useReviews(
+    store,
+    user
+  );
 
 
   const pickImages = async () => {
@@ -274,39 +275,13 @@ const {
               {review.comment}
             </Text>
 
-            <TouchableOpacity
-  style={styles.likesContainer}
-  onPress={() =>
-    toggleLike(review.review_id)
-  }
->
-
-  <Ionicons
-    name={
-      review.liked
-        ? "heart"
-        : "heart-outline"
-    }
-    size={20}
-    color={
-      review.liked
-        ? "#EF4444"
-        : "#AAAAAA"
-    }
-  />
-
-  <Text
-    style={[
-      styles.likesText,
-      review.liked && {
-        color: "#EF4444",
-      },
-    ]}
-  >
-    {review.likes}
-  </Text>
-
-</TouchableOpacity>
+            <LikeButton
+              liked={review.liked}
+              likes={review.likes}
+              onPress={() =>
+                toggleLike(review.review_id)
+              }
+            />
 
             {review.photos &&
               review.photos.length >
@@ -473,18 +448,7 @@ const styles =
       lineHeight: 22,
     },
 
-  likesContainer: {
-  marginTop: 10,
-  flexDirection: "row",
-  alignItems: "center",
-},
 
-    likesText: {
-  color: "#AAAAAA",
-  fontSize: 14,
-  fontWeight: "600",
-  marginLeft: 6,
-},
 
     photosRow: {
       flexDirection: "row",
