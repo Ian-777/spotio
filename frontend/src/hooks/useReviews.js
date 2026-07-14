@@ -45,9 +45,10 @@ export default function useReviews(
   const loadReviews = async () => {
     try {
       const data =
-        await getStoreReviews(
-          store.store_id
-        );
+  await getStoreReviews(
+    store.store_id,
+    user.user_id
+  );
 
       setReviews(data);
 
