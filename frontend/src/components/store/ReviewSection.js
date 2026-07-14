@@ -22,6 +22,7 @@ import { deletePhoto } from "../../services/photosService";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import LikeButton from "../review/LikeButton";
+import PhotoViewer from "../review/PhotoViewer";
 
 export default function ReviewSection({
   store,
@@ -29,6 +30,13 @@ export default function ReviewSection({
 }) {
   const [photos, setPhotos] =
     useState([]);
+
+
+  const [viewerVisible, setViewerVisible] =
+    useState(false);
+
+  const [selectedImage, setSelectedImage] =
+    useState(0);
 
   const pulse =
     useRef(
@@ -120,6 +128,17 @@ export default function ReviewSection({
   };
 
 
+  const openPhotoViewer = (
+    photos,
+    index
+  ) => {
+
+    setSelectedImage(index);
+
+    setViewerVisible(true);
+
+  };
+
 
   return (
     <View style={styles.container}>
@@ -181,6 +200,24 @@ export default function ReviewSection({
             </>
           )}
 
+          <PhotoViewer
+            visible={viewerVisible}
+            imageIndex={selectedImage}
+            images={
+              reviews
+                .flatMap((review) =>
+                  review.photos || []
+                )
+                .map((photo) => ({
+                  uri: photo.image_url.startsWith("http")
+                    ? photo.image_url
+                    : `${API_URL}${photo.image_url}`,
+                }))
+            }
+            onRequestClose={() =>
+              setViewerVisible(false)
+            }
+          />
         </View>
 
         {photos.map((photo, index) => (
@@ -297,15 +334,29 @@ export default function ReviewSection({
                         key={photo.photo_id}
                         style={styles.photoContainer}
                       >
-                        <Image
-                          source={{
-                            uri:
-                              photo.image_url.startsWith("http")
-                                ? photo.image_url
-                                : `${API_URL}${photo.image_url}`,
-                          }}
-                          style={styles.reviewPhoto}
-                        />
+                        <TouchableOpacity
+                          onPress={() =>
+                            openPhotoViewer(
+                              review.photos,
+                              review.photos.findIndex(
+                                (p) =>
+                                  p.photo_id === photo.photo_id
+                              )
+                            )
+                          }
+                        >
+
+                          <Image
+                            source={{
+                              uri:
+                                photo.image_url.startsWith("http")
+                                  ? photo.image_url
+                                  : `${API_URL}${photo.image_url}`,
+                            }}
+                            style={styles.reviewPhoto}
+                          />
+
+                        </TouchableOpacity>
 
                         {review.user_id === user.user_id && (
                           <TouchableOpacity

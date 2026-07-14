@@ -25,7 +25,7 @@ export default function LikeButton({
 
         Animated.sequence([
             Animated.spring(scale, {
-                toValue: 1.35,
+                toValue: 1.20,
                 friction: 3,
                 tension: 180,
                 useNativeDriver: true,
