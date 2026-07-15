@@ -14,6 +14,7 @@ import {
 
 import {
   useFocusEffect,
+  useNavigation,
 } from "@react-navigation/native";
 
 import StoreCard from "../components/cards/StoreCard";
@@ -31,6 +32,8 @@ import {
 export default function FavoritesScreen() {
   const { user } =
     useContext(AuthContext);
+
+  const navigation = useNavigation();
 
   const [favorites, setFavorites] =
     useState([]);
@@ -122,13 +125,19 @@ export default function FavoritesScreen() {
           renderItem={({ item }) => (
             <StoreCard
               store={item}
-              isFavorite={
-                item.isFavorite
-              }
+              isFavorite={item.isFavorite}
               onFavorite={() =>
                 toggleFavorite(
                   item.store_id,
                   item.isFavorite
+                )
+              }
+              onPress={() =>
+                navigation.navigate(
+                  "StoreDetails",
+                  {
+                    store: item,
+                  }
                 )
               }
             />
