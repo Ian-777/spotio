@@ -14,6 +14,7 @@ import StoreHeader from "../components/store/StoreHeader";
 import RatingSection from "../components/store/RatingSection";
 import StoreInfo from "../components/store/StoreInfo";
 import ReviewSection from "../components/store/ReviewSection";
+import StoreMap from "../components/store/StoreMap";
 
 export default function StoreDetailsScreen({
   route,
@@ -37,6 +38,10 @@ export default function StoreDetailsScreen({
         />
 
         <StoreInfo
+          store={store}
+        />
+
+        <StoreMap
           store={store}
         />
 

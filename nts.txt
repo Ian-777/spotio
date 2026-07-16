@@ -29,6 +29,13 @@ git log --oneline -10
 git reset --hard 1ede311
 git push --force origin main
 
+*****ADD LAT AND LONG***
+UPDATE stores
+SET
+    latitude = 4.650035,
+    longitude = -74.056302
+WHERE store_id = 3;
+
 USERS TEST
 oz@gmail.com
 123456789
