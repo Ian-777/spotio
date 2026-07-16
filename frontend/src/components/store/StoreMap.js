@@ -1,115 +1,114 @@
 import React from "react";
 
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Linking,
 } from "react-native";
 
 import MapView, {
-  Marker,
+    Marker,
 } from "react-native-maps";
 
 export default function StoreMap({
-  store,
+    store,
 }) {
-  const openMaps = () => {
-    const url = `https://www.google.com/maps/search/?api=1&query=${store.latitude},${store.longitude}`;
+    const openMaps = () => {
+        const url = `https://www.google.com/maps/search/?api=1&query=${store.latitude},${store.longitude}`;
 
-    Linking.openURL(url);
-  };
+        Linking.openURL(url);
+    };
 
-  if (
-    !store.latitude ||
-    !store.longitude
-  ) {
-    return null;
-  }
+    if (
+        !store.latitude ||
+        !store.longitude
+    ) {
+        return null;
+    }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        📍 Ubicación
-      </Text>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                📍 Ubicación
+            </Text>
 
-      <MapView
-        style={styles.map}
-        scrollEnabled={false}
-        zoomEnabled={false}
-        rotateEnabled={false}
-        pitchEnabled={false}
-        initialRegion={{
-          latitude: Number(
-            store.latitude
-          ),
-          longitude: Number(
-            store.longitude
-          ),
-          latitudeDelta: 0.003,
-          longitudeDelta: 0.003,
-        }}
-      >
-        <Marker
-          coordinate={{
-            latitude: Number(
-              store.latitude
-            ),
-            longitude: Number(
-              store.longitude
-            ),
-          }}
-          title={store.name}
-        />
-      </MapView>
+            <View style={styles.mapContainer}>
+                <MapView
+                    style={styles.map}
+                    scrollEnabled={false}
+                    zoomEnabled={false}
+                    rotateEnabled={false}
+                    pitchEnabled={false}
+                    initialRegion={{
+                        latitude: Number(store.latitude),
+                        longitude: Number(store.longitude),
+                        latitudeDelta: 0.003,
+                        longitudeDelta: 0.003,
+                    }}
+                >
+                    <Marker
+                        coordinate={{
+                            latitude: Number(store.latitude),
+                            longitude: Number(store.longitude),
+                        }}
+                        title={store.name}
+                        pinColor="#7C3AED"
+                    />
+                </MapView>
+            </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={openMaps}
-      >
-        <Text style={styles.buttonText}>
-          Abrir en Google Maps
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+            <TouchableOpacity
+                style={styles.button}
+                onPress={openMaps}
+            >
+                <Text style={styles.buttonText}>
+                    Abrir en Google Maps
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
 
 const styles =
-  StyleSheet.create({
-    container: {
-      backgroundColor: "#181818",
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 20,
-    },
+    StyleSheet.create({
+        container: {
+            backgroundColor: "#181818",
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 20,
+        },
 
-    title: {
-      color: "#FFFFFF",
-      fontSize: 18,
-      fontWeight: "bold",
-      marginBottom: 15,
-    },
+        title: {
+            color: "#FFFFFF",
+            fontSize: 18,
+            fontWeight: "bold",
+            marginBottom: 15,
+        },
 
-    map: {
-      width: "100%",
-      height: 220,
-      borderRadius: 14,
-      overflow: "hidden",
-    },
+        mapContainer: {
+            width: "100%",
+            height: 220,
+            borderRadius: 14,
+            overflow: "hidden",
+        },
 
-    button: {
-      marginTop: 15,
-      backgroundColor: "#7C3AED",
-      borderRadius: 10,
-      paddingVertical: 12,
-      alignItems: "center",
-    },
+        map: {
+            flex: 1,
+        },
 
-    buttonText: {
-      color: "#FFFFFF",
-      fontWeight: "bold",
-      fontSize: 15,
-    },
-  });
+        button: {
+            marginTop: 15,
+            backgroundColor: "#7C3AED",
+            borderRadius: 10,
+            paddingVertical: 12,
+            alignItems: "center",
+        },
+
+        buttonText: {
+            color: "#FFFFFF",
+            fontWeight: "bold",
+            fontSize: 15,
+        },
+    });
