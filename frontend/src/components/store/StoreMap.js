@@ -12,6 +12,8 @@ import MapView, {
     Marker,
 } from "react-native-maps";
 
+import mapStyle from "../../config/mapStyle";
+
 export default function StoreMap({
     store,
 }) {
@@ -37,6 +39,7 @@ export default function StoreMap({
             <View style={styles.mapContainer}>
                 <MapView
                     style={styles.map}
+                    customMapStyle={mapStyle}
                     scrollEnabled={false}
                     zoomEnabled={false}
                     rotateEnabled={false}
