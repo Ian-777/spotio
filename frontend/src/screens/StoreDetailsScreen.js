@@ -13,8 +13,9 @@ import { AuthContext } from "../context/AuthContext";
 import StoreHeader from "../components/store/StoreHeader";
 import RatingSection from "../components/store/RatingSection";
 import StoreInfo from "../components/store/StoreInfo";
-import ReviewSection from "../components/store/ReviewSection";
+import StoreDistance from "../components/store/StoreDistance";
 import StoreMap from "../components/store/StoreMap";
+import ReviewSection from "../components/store/ReviewSection";
 
 export default function StoreDetailsScreen({
   route,
@@ -38,6 +39,10 @@ export default function StoreDetailsScreen({
         />
 
         <StoreInfo
+          store={store}
+        />
+
+        <StoreDistance
           store={store}
         />
 
