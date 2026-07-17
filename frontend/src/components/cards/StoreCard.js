@@ -38,7 +38,6 @@ export default function StoreCard({
             duration: 700,
             useNativeDriver: true,
           }),
-
           Animated.timing(scaleAnim, {
             toValue: 1,
             duration: 700,
@@ -138,7 +137,7 @@ export default function StoreCard({
           </Text>
         </View>
 
-        {/* RATING */}
+        {/* CALIFICACIÓN */}
 
         <View style={styles.ratingContainer}>
           <FontAwesome
@@ -155,6 +154,22 @@ export default function StoreCard({
             ({store.total_ratings || 0})
           </Text>
         </View>
+
+        {/* DISTANCIA */}
+
+        {store.distanceText && (
+          <View style={styles.distanceContainer}>
+            <MaterialIcons
+              name="location-on"
+              size={16}
+              color="#7C3AED"
+            />
+
+            <Text style={styles.distanceText}>
+              {store.distanceText}
+            </Text>
+          </View>
+        )}
 
         {/* UBICACIÓN */}
 
@@ -220,7 +235,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
   ratingText: {
@@ -228,6 +243,19 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: 13,
     fontWeight: "600",
+  },
+
+  distanceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+
+  distanceText: {
+    color: "#7C3AED",
+    fontSize: 13,
+    fontWeight: "600",
+    marginLeft: 4,
   },
 
   badge: {

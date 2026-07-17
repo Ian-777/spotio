@@ -15,8 +15,14 @@ import { searchStores } from "../api/api";
 import StoreCard from "../components/cards/StoreCard";
 
 import { AuthContext } from "../context/AuthContext";
+import { useLocation } from "../context/LocationContext";
 
 import useFavorites from "../hooks/useFavorites";
+
+import {
+  getDistance,
+  formatDistance,
+} from "../utils/distance";
 
 export default function StoreScreen({
   route,
@@ -32,6 +38,11 @@ export default function StoreScreen({
   const { user } =
     useContext(AuthContext);
 
+  const {
+    location,
+    permissionGranted,
+  } = useLocation();
+
   const [stores, setStores] =
     useState([]);
 
@@ -41,8 +52,18 @@ export default function StoreScreen({
   } = useFavorites(user);
 
   useEffect(() => {
+    console.log(
+      "LOCATION:",
+      location
+    );
+
+    console.log(
+      "PERMISSION:",
+      permissionGranted
+    );
+
     loadStores();
-  }, []);
+  }, [location]);
 
   const loadStores =
     async () => {
@@ -55,12 +76,58 @@ export default function StoreScreen({
             category_id,
           });
 
+        let storesWithDistance =
+          data;
+
+        if (location) {
+          storesWithDistance =
+            data.map((store) => {
+              if (
+                !store.latitude ||
+                !store.longitude
+              ) {
+                return store;
+              }
+
+              const distance =
+                getDistance(
+                  location.latitude,
+                  location.longitude,
+                  Number(
+                    store.latitude
+                  ),
+                  Number(
+                    store.longitude
+                  )
+                );
+
+              return {
+                ...store,
+                distance,
+                distanceText:
+                  formatDistance(
+                    distance
+                  ),
+              };
+            });
+
+          storesWithDistance.sort(
+            (a, b) =>
+              (a.distance ??
+                Number.MAX_VALUE) -
+              (b.distance ??
+                Number.MAX_VALUE)
+          );
+        }
+
         console.log(
           "STORES:",
-          data
+          storesWithDistance
         );
 
-        setStores(data);
+        setStores(
+          storesWithDistance
+        );
       } catch (error) {
         console.log(
           "ERROR STORES:",
@@ -100,14 +167,10 @@ export default function StoreScreen({
       ) : (
         <FlatList
           data={stores}
-          keyExtractor={(
-            item
-          ) =>
+          keyExtractor={(item) =>
             item.store_id.toString()
           }
-          renderItem={({
-            item,
-          }) => (
+          renderItem={({ item }) => (
             <StoreCard
               store={item}
               isFavorite={favoriteStores.includes(
@@ -122,8 +185,7 @@ export default function StoreScreen({
                 navigation.navigate(
                   "StoreDetails",
                   {
-                    store:
-                      item,
+                    store: item,
                   }
                 )
               }
