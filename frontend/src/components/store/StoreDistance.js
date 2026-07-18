@@ -8,37 +8,17 @@ import {
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { useLocation } from "../../context/LocationContext";
-
-import {
-  getDistance,
-  formatDistance,
-} from "../../utils/distance";
+import useStoreDistance from "../../hooks/useStoreDistance";
 
 export default function StoreDistance({
   store,
 }) {
-  const { location } =
-    useLocation();
+  const info =
+    useStoreDistance(store);
 
-  if (
-    !location ||
-    !store?.latitude ||
-    !store?.longitude
-  ) {
+  if (!info) {
     return null;
   }
-
-  const distance =
-    getDistance(
-      location.latitude,
-      location.longitude,
-      Number(store.latitude),
-      Number(store.longitude)
-    );
-
-  const distanceText =
-    formatDistance(distance);
 
   return (
     <View style={styles.container}>
@@ -49,7 +29,7 @@ export default function StoreDistance({
       />
 
       <Text style={styles.text}>
-        A {distanceText} de tu ubicación
+        A {info.distanceText} de tu ubicación
       </Text>
     </View>
   );
@@ -59,7 +39,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   text: {

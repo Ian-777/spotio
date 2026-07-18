@@ -19,10 +19,6 @@ import { useLocation } from "../context/LocationContext";
 
 import useFavorites from "../hooks/useFavorites";
 
-import {
-  getDistance,
-  formatDistance,
-} from "../utils/distance";
 
 export default function StoreScreen({
   route,
@@ -65,76 +61,30 @@ export default function StoreScreen({
     loadStores();
   }, [location]);
 
-  const loadStores =
-    async () => {
-      try {
-        const data =
-          await searchStores({
-            city_id,
-            locality_id,
-            neighborhood_id,
-            category_id,
-          });
+const loadStores =
+  async () => {
+    try {
+      const data =
+        await searchStores({
+          city_id,
+          locality_id,
+          neighborhood_id,
+          category_id,
+        });
 
-        let storesWithDistance =
-          data;
+      console.log(
+        "STORES:",
+        data
+      );
 
-        if (location) {
-          storesWithDistance =
-            data.map((store) => {
-              if (
-                !store.latitude ||
-                !store.longitude
-              ) {
-                return store;
-              }
-
-              const distance =
-                getDistance(
-                  location.latitude,
-                  location.longitude,
-                  Number(
-                    store.latitude
-                  ),
-                  Number(
-                    store.longitude
-                  )
-                );
-
-              return {
-                ...store,
-                distance,
-                distanceText:
-                  formatDistance(
-                    distance
-                  ),
-              };
-            });
-
-          storesWithDistance.sort(
-            (a, b) =>
-              (a.distance ??
-                Number.MAX_VALUE) -
-              (b.distance ??
-                Number.MAX_VALUE)
-          );
-        }
-
-        console.log(
-          "STORES:",
-          storesWithDistance
-        );
-
-        setStores(
-          storesWithDistance
-        );
-      } catch (error) {
-        console.log(
-          "ERROR STORES:",
-          error
-        );
-      }
-    };
+      setStores(data);
+    } catch (error) {
+      console.log(
+        "ERROR STORES:",
+        error
+      );
+    }
+  };
 
   return (
     <View

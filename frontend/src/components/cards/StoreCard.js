@@ -17,6 +17,8 @@ import {
   FontAwesome,
 } from "@expo/vector-icons";
 
+import StoreDistance from "../store/StoreDistance";
+
 export default function StoreCard({
   store,
   onFavorite,
@@ -127,7 +129,7 @@ export default function StoreCard({
               {
                 backgroundColor:
                   store.category_name ===
-                  "Comer"
+                    "Comer"
                     ? "#3B82F6"
                     : "#7C3AED",
               },
@@ -170,6 +172,12 @@ export default function StoreCard({
             </Text>
           </View>
         )}
+
+        {/* DISTANCIA */}
+
+        <StoreDistance
+          store={store}
+        />
 
         {/* UBICACIÓN */}
 
