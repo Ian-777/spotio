@@ -13,4 +13,10 @@ router.get(
 );
 
 
+router.get(
+  "/:store_id",
+  getStoreById
+);
+
+
 module.exports = router;

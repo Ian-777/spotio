@@ -152,8 +152,47 @@ const searchStores = async (req, res) => {
   }
 };
 
+const getStoreById = async (req,res)=>{
+
+  try {
+
+    const {
+      store_id
+    } = req.params;
+
+
+    const store =
+      await storesModel.getStoreById(
+        Number(store_id)
+      );
+
+
+    if(!store){
+
+      return res.status(404).json({
+        message:"Establecimiento no encontrado"
+      });
+
+    }
+
+
+    res.json(store);
+
+
+  } catch(error){
+
+    console.error(error);
+
+    res.status(500).json({
+      message:"Error obteniendo establecimiento"
+    });
+
+  }
+
+};
 
 
 module.exports = {
-  searchStores
+  searchStores,
+  getStoreById,
 };

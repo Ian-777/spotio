@@ -314,15 +314,21 @@ sp.is_verified,
 sp.is_featured,
 
 
-COALESCE(img.images,'[]') AS images,
-
-
-COALESCE(hrs.hours,'[]') AS hours,
+COALESCE(
+  img.images,
+  '[]'::jsonb
+) AS images,
 
 
 COALESCE(
-social.social_links,
-'[]'
+  hrs.hours,
+  '[]'::json
+) AS hours,
+
+
+COALESCE(
+  social.social_links,
+  '[]'::json
 ) AS social_links,
 
 
@@ -339,11 +345,10 @@ cat.name AS category_name,
 sub.name AS subcategory_name,
 
 
-ARRAY_AGG(DISTINCT t.name)
-FILTER(
-WHERE t.name IS NOT NULL
-)
-AS tags,
+COALESCE(
+  tags.tags,
+  '{}'
+) AS tags,
 
 
 r_avg.average_rating,
@@ -534,44 +539,31 @@ GROUP BY store_id
 
 ON s.store_id=r_avg.store_id
 
+LEFT JOIN (
 
+  SELECT
+
+  st.store_id,
+
+  ARRAY_AGG(DISTINCT t.name)
+  FILTER(
+    WHERE t.name IS NOT NULL
+  ) AS tags
+
+
+  FROM store_tags st
+
+  JOIN tags t
+  ON st.tag_id=t.tag_id
+
+  GROUP BY st.store_id
+
+) tags
+
+ON s.store_id = tags.store_id
 
 WHERE s.store_id=$1
 
-
-
-GROUP BY
-
-s.store_id,
-
-sp.description,
-sp.phone,
-sp.whatsapp,
-sp.email,
-sp.website,
-sp.price_level,
-sp.is_verified,
-sp.is_featured,
-
-img.images,
-
-hrs.hours,
-
-social.social_links,
-
-c.name,
-
-l.name,
-
-n.name,
-
-cat.name,
-
-sub.name,
-
-r_avg.average_rating,
-
-r_avg.total_ratings;
 
 
 
