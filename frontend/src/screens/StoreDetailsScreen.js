@@ -17,6 +17,8 @@ import StoreDistance from "../components/store/StoreDistance";
 import StoreMap from "../components/store/StoreMap";
 import ReviewSection from "../components/store/ReviewSection";
 import StoreContact from "../components/store/StoreContact";
+import StoreHours from "../components/store/StoreHours";
+import StoreTags from "../components/store/StoreTags";
 
 export default function StoreDetailsScreen({
   route,
@@ -43,9 +45,17 @@ export default function StoreDetailsScreen({
           store={store}
         />
 
+        <StoreTags
+          store={store}
+        />
+
+        <StoreHours
+          store={store}
+        />
+
         <StoreContact
-  store={store}
-/>
+          store={store}
+        />
 
         <StoreDistance
           store={store}

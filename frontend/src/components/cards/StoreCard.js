@@ -139,6 +139,72 @@ export default function StoreCard({
           </Text>
         </View>
 
+        {/* ESTADO */}
+
+{
+  store.status && (
+
+    <View style={styles.statusContainer}>
+
+      <MaterialIcons
+        name={
+          store.status.is_open
+            ? "check-circle"
+            : "schedule"
+        }
+        size={16}
+        color={
+          store.status.is_open
+            ? "#22C55E"
+            : "#F59E0B"
+        }
+      />
+
+      <Text
+        style={[
+          styles.statusText,
+          {
+            color:
+              store.status.is_open
+                ? "#22C55E"
+                : "#F59E0B",
+          },
+        ]}
+      >
+        {store.status.label}
+
+      </Text>
+
+      {
+        store.status.is_open &&
+        store.status.closes_in && (
+
+          <Text style={styles.statusExtra}>
+            {" • "}
+            Cierra en {store.status.closes_in}
+          </Text>
+
+        )
+      }
+
+
+      {
+        !store.status.is_open &&
+        store.status.opens_in && (
+
+          <Text style={styles.statusExtra}>
+            {" • "}
+            Abre en {store.status.opens_in}
+          </Text>
+
+        )
+      }
+
+    </View>
+
+  )
+}
+
         {/* CALIFICACIÓN */}
 
         <View style={styles.ratingContainer}>
@@ -278,4 +344,22 @@ const styles = StyleSheet.create({
     color: "#A1A1AA",
     fontSize: 12,
   },
+
+  statusContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 8,
+},
+
+statusText: {
+  fontSize: 13,
+  fontWeight: "700",
+  marginLeft: 5,
+},
+
+statusExtra: {
+  color: "#A1A1AA",
+  fontSize: 12,
+  marginLeft: 4,
+},
 });

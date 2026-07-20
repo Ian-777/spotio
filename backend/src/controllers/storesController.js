@@ -152,43 +152,70 @@ const searchStores = async (req, res) => {
   }
 };
 
-const getStoreById = async (req,res)=>{
-
+const getStoreById = async (req, res) => {
   try {
 
-    const {
-      store_id
-    } = req.params;
-
+    const { store_id } = req.params;
 
     const store =
       await storesModel.getStoreById(
         Number(store_id)
       );
 
-
-    if(!store){
-
+    if (!store) {
       return res.status(404).json({
-        message:"Establecimiento no encontrado"
+        message: "Establecimiento no encontrado"
       });
-
     }
+
+
+    /*
+      Estado calculado
+      según horarios
+    */
+
+    store.status = getStoreStatus(
+      store.hours
+    );
+
+
+    /*
+      Link listo para WhatsApp
+    */
+
+    store.whatsapp_link =
+      store.whatsapp
+        ? `https://wa.me/57${store.whatsapp.replace(/\D/g, "")}`
+        : null;
+
+
+    /*
+      Nivel de precio
+    */
+
+    store.price_label =
+      store.price_level === 1
+        ? "$"
+        : store.price_level === 2
+        ? "$$"
+        : store.price_level === 3
+        ? "$$$"
+        : store.price_level === 4
+        ? "$$$$"
+        : null;
 
 
     res.json(store);
 
-
-  } catch(error){
+  } catch (error) {
 
     console.error(error);
 
     res.status(500).json({
-      message:"Error obteniendo establecimiento"
+      message: "Error obteniendo establecimiento"
     });
 
   }
-
 };
 
 
