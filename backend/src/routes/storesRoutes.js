@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const storesController = require("../controllers/storesController");
 
-// GET /stores/search
-router.get("/search", storesController.searchStores);
+const {
+  searchStores
+} = require("../controllers/storesController");
+
+
+router.get(
+  "/search",
+  searchStores
+);
+
 
 module.exports = router;
