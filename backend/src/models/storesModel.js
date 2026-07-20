@@ -589,7 +589,34 @@ return result.rows[0];
 
 };
 
+
+const getStoreBySlug = async (slug)=>{
+
+
+const query = `
+
+SELECT *
+
+FROM stores
+
+WHERE slug = $1
+
+`;
+
+
+const result = await pool.query(
+  query,
+  [slug]
+);
+
+
+return result.rows[0];
+
+};
+
+
 module.exports = {
  searchStores,
- getStoreById
+ getStoreById,
+ getStoreBySlug
 };

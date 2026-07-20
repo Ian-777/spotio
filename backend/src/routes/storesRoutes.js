@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  searchStores
+  searchStores,
+  getStoreById
 } = require("../controllers/storesController");
 
 
