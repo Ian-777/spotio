@@ -36,6 +36,8 @@ export default function GalleryCarousel({
     );
   }
 
+  console.log("PHOTOS:", photos);
+
   return (
     <FlatList
       horizontal
@@ -45,16 +47,27 @@ export default function GalleryCarousel({
       keyExtractor={(item) =>
         item.photo_id.toString()
       }
-      renderItem={({ item }) => (
-        <Image
-          source={{
-            uri: item.image_url.startsWith("http")
-              ? item.image_url
-              : `${API_URL}${item.image_url}`,
-          }}
-          style={styles.image}
-        />
-      )}
+      renderItem={({ item }) => {
+
+  if (!item?.image_url) {
+    return null;
+  }
+
+  const imageUrl =
+    item.image_url.startsWith("http")
+      ? item.image_url
+      : `${API_URL}${item.image_url}`;
+
+  return (
+    <Image
+      source={{
+        uri: imageUrl,
+      }}
+      style={styles.image}
+    />
+  );
+
+}}
     />
   );
 }
