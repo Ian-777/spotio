@@ -23,13 +23,19 @@ export async function getStorePhotos(
     return data;
   }
 
+  if (
+  store.images &&
+  store.images.length > 0
+) {
   return [
     {
       photo_id: 0,
-      image_url:
-        store.image_url,
+      image_url: store.images[0].image_url,
     },
   ];
+}
+
+return [];
 }
 
 export async function uploadStorePhoto(

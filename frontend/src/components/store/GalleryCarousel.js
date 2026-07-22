@@ -36,7 +36,9 @@ export default function GalleryCarousel({
     );
   }
 
-  console.log("PHOTOS:", photos);
+console.log("AAAAAAAAAAAAAAAA");
+console.log("STORE:", store);
+console.log("PHOTOS:", photos);
 
   return (
     <FlatList
