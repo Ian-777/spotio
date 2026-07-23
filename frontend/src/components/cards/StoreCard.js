@@ -71,7 +71,7 @@ export default function StoreCard({
         <Image
           source={{
             uri:
-              store.image_url ||
+              store.images?.[0]?.image_url ||
               "https://via.placeholder.com/400x200",
           }}
           style={styles.image}
@@ -141,69 +141,69 @@ export default function StoreCard({
 
         {/* ESTADO */}
 
-{
-  store.status && (
+        {
+          store.status && (
 
-    <View style={styles.statusContainer}>
+            <View style={styles.statusContainer}>
 
-      <MaterialIcons
-        name={
-          store.status.is_open
-            ? "check-circle"
-            : "schedule"
+              <MaterialIcons
+                name={
+                  store.status.is_open
+                    ? "check-circle"
+                    : "schedule"
+                }
+                size={16}
+                color={
+                  store.status.is_open
+                    ? "#22C55E"
+                    : "#F59E0B"
+                }
+              />
+
+              <Text
+                style={[
+                  styles.statusText,
+                  {
+                    color:
+                      store.status.is_open
+                        ? "#22C55E"
+                        : "#F59E0B",
+                  },
+                ]}
+              >
+                {store.status.label}
+
+              </Text>
+
+              {
+                store.status.is_open &&
+                store.status.closes_in && (
+
+                  <Text style={styles.statusExtra}>
+                    {" • "}
+                    Cierra en {store.status.closes_in}
+                  </Text>
+
+                )
+              }
+
+
+              {
+                !store.status.is_open &&
+                store.status.opens_in && (
+
+                  <Text style={styles.statusExtra}>
+                    {" • "}
+                    Abre en {store.status.opens_in}
+                  </Text>
+
+                )
+              }
+
+            </View>
+
+          )
         }
-        size={16}
-        color={
-          store.status.is_open
-            ? "#22C55E"
-            : "#F59E0B"
-        }
-      />
-
-      <Text
-        style={[
-          styles.statusText,
-          {
-            color:
-              store.status.is_open
-                ? "#22C55E"
-                : "#F59E0B",
-          },
-        ]}
-      >
-        {store.status.label}
-
-      </Text>
-
-      {
-        store.status.is_open &&
-        store.status.closes_in && (
-
-          <Text style={styles.statusExtra}>
-            {" • "}
-            Cierra en {store.status.closes_in}
-          </Text>
-
-        )
-      }
-
-
-      {
-        !store.status.is_open &&
-        store.status.opens_in && (
-
-          <Text style={styles.statusExtra}>
-            {" • "}
-            Abre en {store.status.opens_in}
-          </Text>
-
-        )
-      }
-
-    </View>
-
-  )
-}
 
         {/* CALIFICACIÓN */}
 
@@ -346,20 +346,20 @@ const styles = StyleSheet.create({
   },
 
   statusContainer: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginBottom: 8,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
 
-statusText: {
-  fontSize: 13,
-  fontWeight: "700",
-  marginLeft: 5,
-},
+  statusText: {
+    fontSize: 13,
+    fontWeight: "700",
+    marginLeft: 5,
+  },
 
-statusExtra: {
-  color: "#A1A1AA",
-  fontSize: 12,
-  marginLeft: 4,
-},
+  statusExtra: {
+    color: "#A1A1AA",
+    fontSize: 12,
+    marginLeft: 4,
+  },
 });

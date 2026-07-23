@@ -46,9 +46,11 @@ console.log("PHOTOS:", photos);
       pagingEnabled
       showsHorizontalScrollIndicator={false}
       data={photos}
-      keyExtractor={(item) =>
-        item.photo_id.toString()
-      }
+     keyExtractor={(item, index) =>
+  item.photo_id
+    ? item.photo_id.toString()
+    : index.toString()
+}
       renderItem={({ item }) => {
 
   if (!item?.image_url) {

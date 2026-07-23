@@ -13,29 +13,43 @@ export async function getStorePhotos(
     );
   }
 
-  const data =
+  const userPhotos =
     await response.json();
 
+  const photos = [];
+
+  /*
+    Agregar primero la portada
+    oficial del establecimiento
+  */
+
   if (
-    Array.isArray(data) &&
-    data.length > 0
+    store.images &&
+    Array.isArray(store.images) &&
+    store.images.length > 0 &&
+    store.images[0].image_url
   ) {
-    return data;
+    photos.push({
+      photo_id: "cover",
+      image_url:
+        store.images[0].image_url,
+      is_cover: true,
+    });
   }
 
-  if (
-  store.images &&
-  store.images.length > 0
-) {
-  return [
-    {
-      photo_id: 0,
-      image_url: store.images[0].image_url,
-    },
-  ];
-}
+  /*
+    Después agregar todas las
+    fotos subidas por usuarios
+  */
 
-return [];
+  if (
+    Array.isArray(userPhotos) &&
+    userPhotos.length > 0
+  ) {
+    photos.push(...userPhotos);
+  }
+
+  return photos;
 }
 
 export async function uploadStorePhoto(
