@@ -89,7 +89,7 @@ export default function GalleryCarousel({
           const index =
             Math.round(
               event.nativeEvent.contentOffset.x /
-                width
+              width
             );
 
           setCurrentIndex(index);
@@ -135,7 +135,7 @@ export default function GalleryCarousel({
                 <Text style={styles.badgeText}>
 
                   {
-                    index === 0
+                    item.image_type === "cover"
                       ? "📍 Foto oficial"
                       : `👤 ${item.name || "Usuario"}`
                   }
@@ -172,7 +172,7 @@ export default function GalleryCarousel({
                 styles.dot,
 
                 currentIndex === index &&
-                  styles.activeDot,
+                styles.activeDot,
 
               ]}
             />
@@ -201,109 +201,109 @@ const styles = StyleSheet.create({
 
     width,
 
-    height:260,
+    height: 260,
 
   },
 
-  loading:{
+  loading: {
 
-    height:260,
+    height: 260,
 
-    justifyContent:"center",
+    justifyContent: "center",
 
-    alignItems:"center",
+    alignItems: "center",
 
-    backgroundColor:"#111",
-
-  },
-
-  badge:{
-
-    position:"absolute",
-
-    left:15,
-
-    bottom:15,
-
-    backgroundColor:"rgba(0,0,0,0.65)",
-
-    paddingHorizontal:12,
-
-    paddingVertical:6,
-
-    borderRadius:12,
+    backgroundColor: "#111",
 
   },
 
-  badgeText:{
+  badge: {
 
-    color:"#FFF",
+    position: "absolute",
 
-    fontWeight:"700",
+    left: 15,
 
-    fontSize:12,
+    bottom: 15,
 
-  },
+    backgroundColor: "rgba(0,0,0,0.65)",
 
-  counter:{
+    paddingHorizontal: 12,
 
-    position:"absolute",
+    paddingVertical: 6,
 
-    top:18,
-
-    right:18,
-
-    backgroundColor:"rgba(0,0,0,.6)",
-
-    borderRadius:20,
-
-    paddingHorizontal:12,
-
-    paddingVertical:5,
+    borderRadius: 12,
 
   },
 
-  counterText:{
+  badgeText: {
 
-    color:"#FFF",
+    color: "#FFF",
 
-    fontWeight:"700",
+    fontWeight: "700",
 
-    fontSize:13,
-
-  },
-
-  dots:{
-
-    position:"absolute",
-
-    bottom:15,
-
-    alignSelf:"center",
-
-    flexDirection:"row",
+    fontSize: 12,
 
   },
 
-  dot:{
+  counter: {
 
-    width:8,
+    position: "absolute",
 
-    height:8,
+    top: 18,
 
-    borderRadius:4,
+    right: 18,
 
-    marginHorizontal:4,
+    backgroundColor: "rgba(0,0,0,.6)",
 
-    backgroundColor:"#777",
+    borderRadius: 20,
+
+    paddingHorizontal: 12,
+
+    paddingVertical: 5,
 
   },
 
-  activeDot:{
+  counterText: {
 
-    backgroundColor:"#FFF",
+    color: "#FFF",
 
-    width:18,
+    fontWeight: "700",
+
+    fontSize: 13,
+
+  },
+
+  dots: {
+
+    position: "absolute",
+
+    bottom: 15,
+
+    alignSelf: "center",
+
+    flexDirection: "row",
+
+  },
+
+  dot: {
+
+    width: 8,
+
+    height: 8,
+
+    borderRadius: 4,
+
+    marginHorizontal: 4,
+
+    backgroundColor: "#777",
+
+  },
+
+  activeDot: {
+
+    backgroundColor: "#FFF",
+
+    width: 18,
 
   },
 

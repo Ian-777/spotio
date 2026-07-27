@@ -19,22 +19,29 @@ export async function getStorePhotos(
   const photos = [];
 
   /*
-    Agregar primero la portada
-    oficial del establecimiento
+    Agregar primero todas las
+    fotos oficiales del establecimiento
   */
 
   if (
-    store.images &&
     Array.isArray(store.images) &&
-    store.images.length > 0 &&
-    store.images[0].image_url
+    store.images.length > 0
   ) {
-    photos.push({
-      photo_id: "cover",
-      image_url:
-        store.images[0].image_url,
-      is_cover: true,
-    });
+    photos.push(
+      ...store.images.map(
+        (image, index) => ({
+          photo_id: `cover_${index}`,
+          image_url:
+            image.image_url,
+          image_type:
+            image.image_type,
+          is_primary:
+            image.is_primary,
+          is_cover: true,
+          name: null,
+        })
+      )
+    );
   }
 
   /*
@@ -46,7 +53,12 @@ export async function getStorePhotos(
     Array.isArray(userPhotos) &&
     userPhotos.length > 0
   ) {
-    photos.push(...userPhotos);
+    photos.push(
+      ...userPhotos.map(photo => ({
+        ...photo,
+        is_cover: false,
+      }))
+    );
   }
 
   return photos;
