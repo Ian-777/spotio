@@ -6,37 +6,39 @@ import {
 export const RegisterStoreContext =
   createContext();
 
+const initialStoreData = {
+  name: "",
+  address: "",
+
+  city_id: null,
+  locality_id: null,
+  neighborhood_id: null,
+
+  latitude: null,
+  longitude: null,
+
+  description: "",
+
+  phone: "",
+  whatsapp: "",
+  email: "",
+  website: "",
+
+  categories: [],
+  subcategories: [],
+  tags: [],
+
+  hours: [],
+
+  coverImage: null,
+  gallery: [],
+};
+
 export function RegisterStoreProvider({
   children,
 }) {
   const [storeData, setStoreData] =
-    useState({
-      name: "",
-      address: "",
-
-      city_id: null,
-      locality_id: null,
-      neighborhood_id: null,
-
-      latitude: null,
-      longitude: null,
-
-      description: "",
-
-      phone: "",
-      whatsapp: "",
-      email: "",
-      website: "",
-
-      categories: [],
-      subcategories: [],
-      tags: [],
-
-      hours: [],
-
-      coverImage: null,
-      gallery: [],
-    });
+    useState(initialStoreData);
 
   const updateStoreData = (
     values
@@ -48,33 +50,7 @@ export function RegisterStoreProvider({
   };
 
   const resetStoreData = () => {
-    setStoreData({
-      name: "",
-      address: "",
-
-      city_id: null,
-      locality_id: null,
-      neighborhood_id: null,
-
-      latitude: null,
-      longitude: null,
-
-      description: "",
-
-      phone: "",
-      whatsapp: "",
-      email: "",
-      website: "",
-
-      categories: [],
-      subcategories: [],
-      tags: [],
-
-      hours: [],
-
-      coverImage: null,
-      gallery: [],
-    });
+    setStoreData(initialStoreData);
   };
 
   return (

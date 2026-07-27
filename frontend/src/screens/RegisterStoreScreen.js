@@ -1,35 +1,39 @@
 import {
   SafeAreaView,
   StyleSheet,
-} from "react-native";
+} from "react-native-safe-area-context";
+
+import {
+  RegisterStoreProvider,
+} from "../context/RegisterStoreContext";
 
 import RegisterProgress from "../components/registerStore/RegisterProgress";
 
-export default function RegisterStoreScreen(){
+import StepOneBasicInfo from "../components/registerStore/StepOneBasicInfo";
 
-    return(
+export default function RegisterStoreScreen() {
+  return (
+    <RegisterStoreProvider>
+      <SafeAreaView
+        style={styles.container}
+      >
+        <RegisterProgress
+          step={1}
+          totalSteps={7}
+          title="Información básica"
+        />
 
-        <SafeAreaView
-            style={styles.container}
-        >
-
-            <RegisterProgress
-                step={1}
-                totalSteps={7}
-                title="Información básica"
-            />
-
-        </SafeAreaView>
-
-    );
-
+        <StepOneBasicInfo />
+      </SafeAreaView>
+    </RegisterStoreProvider>
+  );
 }
 
-const styles=StyleSheet.create({
-
-    container:{
-        flex:1,
-        backgroundColor:"#0D0D0D",
+const styles =
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor:
+        "#0D0D0D",
     },
-
-});
+  });
