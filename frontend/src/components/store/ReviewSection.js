@@ -22,7 +22,7 @@ import { deletePhoto } from "../../services/photosService";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import LikeButton from "../review/LikeButton";
-import PhotoViewer from "../review/PhotoViewer";
+import PhotoViewer from "../common/ImageViewer";
 
 export default function ReviewSection({
   store,
