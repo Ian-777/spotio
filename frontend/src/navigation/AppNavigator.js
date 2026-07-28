@@ -18,6 +18,7 @@ import CategoryScreen from "../screens/CategoryScreen";
 import StoreScreen from "../screens/StoreScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import StoreDetailsScreen from "../screens/StoreDetailsScreen";
+import RegisterStoreScreen from "../screens/RegisterStoreScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,7 +46,9 @@ export default function AppNavigator() {
       >
         {!userToken ? (
           <>
-            {/* AUTH */}
+            {/* ===========================
+                AUTH
+            =========================== */}
 
             <Stack.Screen
               name="Login"
@@ -62,51 +65,105 @@ export default function AppNavigator() {
                 title: "Crear cuenta",
               }}
             />
+
+            {/*
+              ============================================
+              TEMPORAL
+              --------------------------------------------
+              Esta pantalla sólo existe mientras construimos
+              el asistente de registro de establecimientos.
+
+              Cuando exista el Perfil del usuario,
+              este acceso debe ELIMINARSE de aquí y
+              abrirse únicamente desde:
+
+                  Perfil
+                    ↓
+              Registrar establecimiento
+
+              NO borrar hasta terminar el flujo completo
+              de registro de tiendas.
+              ============================================
+            */}
+
+            <Stack.Screen
+              name="RegisterStore"
+              component={RegisterStoreScreen}
+              options={{
+                title: "Registrar establecimiento",
+                headerShown: false,
+              }}
+            />
           </>
         ) : (
           <>
-            {/* APP */}
+            {/* ===========================
+                APP
+            =========================== */}
 
             <Stack.Screen
               name="Cities"
               component={CityScreen}
-              options={{ title: "Ciudades" }}
+              options={{
+                title: "Ciudades",
+              }}
             />
 
             <Stack.Screen
               name="Favorites"
               component={FavoritesScreen}
-              options={{ title: "Mis favoritos" }}
+              options={{
+                title: "Mis favoritos",
+              }}
             />
 
             <Stack.Screen
               name="Localities"
               component={LocalityScreen}
-              options={{ title: "Localidades" }}
+              options={{
+                title: "Localidades",
+              }}
             />
 
             <Stack.Screen
               name="Neighborhoods"
               component={NeighborhoodScreen}
-              options={{ title: "Barrios" }}
+              options={{
+                title: "Barrios",
+              }}
             />
 
             <Stack.Screen
               name="Categories"
               component={CategoryScreen}
-              options={{ title: "Categorías" }}
+              options={{
+                title: "Categorías",
+              }}
             />
 
             <Stack.Screen
               name="Stores"
               component={StoreScreen}
-              options={{ title: "Establecimientos" }}
+              options={{
+                title: "Establecimientos",
+              }}
             />
 
             <Stack.Screen
               name="StoreDetails"
               component={StoreDetailsScreen}
-              options={{ title: "Detalles" }}
+              options={{
+                title: "Detalles",
+              }}
+            />
+
+            <Stack.Screen
+              name="RegisterStore"
+              component={RegisterStoreScreen}
+              options={{
+                title: "Registrar establecimiento",
+                headerShown: false,
+              }}
             />
           </>
         )}

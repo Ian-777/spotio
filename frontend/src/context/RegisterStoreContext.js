@@ -37,31 +37,53 @@ const initialStoreData = {
 export function RegisterStoreProvider({
   children,
 }) {
+
+  const [step, setStep] =
+    useState(1);
+
   const [storeData, setStoreData] =
     useState(initialStoreData);
 
   const updateStoreData = (
     values
   ) => {
+
     setStoreData((prev) => ({
       ...prev,
       ...values,
     }));
+
   };
 
   const resetStoreData = () => {
-    setStoreData(initialStoreData);
+
+    setStep(1);
+
+    setStoreData(
+      initialStoreData
+    );
+
   };
 
   return (
+
     <RegisterStoreContext.Provider
       value={{
+
+        step,
+        setStep,
+
         storeData,
         updateStoreData,
         resetStoreData,
+
       }}
     >
+
       {children}
+
     </RegisterStoreContext.Provider>
+
   );
+
 }
