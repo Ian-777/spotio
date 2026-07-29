@@ -4,11 +4,15 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import MapView, {
   Marker,
 } from "react-native-maps";
+
+import * as Location from "expo-location";
 
 import {
   RegisterStoreContext,
@@ -31,12 +35,63 @@ export default function LocationPicker() {
   const longitude =
     storeData.longitude ?? -74.2478944;
 
+  async function useCurrentLocation() {
+
+    try {
+
+      const { status } =
+        await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+
+        Alert.alert(
+          "Permiso requerido",
+          "Debes permitir el acceso a la ubicación."
+        );
+
+        return;
+
+      }
+
+      const location =
+        await Location.getCurrentPositionAsync({
+          accuracy:
+            Location.Accuracy.High,
+        });
+
+      updateStoreData({
+
+        latitude:
+          location.coords.latitude,
+
+        longitude:
+          location.coords.longitude,
+
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      Alert.alert(
+        "Error",
+        "No fue posible obtener la ubicación."
+      );
+
+    }
+
+  }
+
   return (
 
     <View style={styles.container}>
 
       <Text style={styles.title}>
         📍 Ubicación
+      </Text>
+
+      <Text style={styles.subtitle}>
+        Arrastra el marcador hasta la ubicación exacta del establecimiento.
       </Text>
 
       <View style={styles.mapContainer}>
@@ -79,6 +134,27 @@ export default function LocationPicker() {
 
       </View>
 
+      <TouchableOpacity
+        style={[
+          styles.locationButton,
+          storeData.latitude &&
+            styles.locationButtonSuccess,
+        ]}
+        onPress={useCurrentLocation}
+      >
+
+        <Text
+          style={styles.locationButtonText}
+        >
+
+          {storeData.latitude
+            ? "✅ Ubicación obtenida"
+            : "📍 Usar mi ubicación actual"}
+
+        </Text>
+
+      </TouchableOpacity>
+
     </View>
 
   );
@@ -98,7 +174,14 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    color: "#A1A1AA",
+    fontSize: 13,
     marginBottom: 15,
+    lineHeight: 18,
   },
 
   mapContainer: {
@@ -110,6 +193,24 @@ const styles = StyleSheet.create({
 
   map: {
     flex: 1,
+  },
+
+  locationButton: {
+    marginTop: 16,
+    backgroundColor: "#7C3AED",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+
+  locationButtonSuccess: {
+    backgroundColor: "#16A34A",
+  },
+
+  locationButtonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "700",
   },
 
 });
