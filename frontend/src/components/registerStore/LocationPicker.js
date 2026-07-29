@@ -1,4 +1,7 @@
-import { useContext } from "react";
+import {
+  useContext,
+  useRef,
+} from "react";
 
 import {
   View,
@@ -28,6 +31,8 @@ export default function LocationPicker() {
   } = useContext(
     RegisterStoreContext
   );
+
+  const mapRef = useRef(null);
 
   const latitude =
     storeData.latitude ?? 4.6482837;
@@ -69,6 +74,20 @@ export default function LocationPicker() {
 
       });
 
+      mapRef.current?.animateToRegion(
+        {
+          latitude:
+            location.coords.latitude,
+
+          longitude:
+            location.coords.longitude,
+
+          latitudeDelta: 0.003,
+          longitudeDelta: 0.003,
+        },
+        800
+      );
+
     } catch (error) {
 
       console.log(error);
@@ -97,6 +116,7 @@ export default function LocationPicker() {
       <View style={styles.mapContainer}>
 
         <MapView
+          ref={mapRef}
           style={styles.map}
           customMapStyle={mapDarkStyle}
           region={{
@@ -122,6 +142,16 @@ export default function LocationPicker() {
               } =
                 e.nativeEvent.coordinate;
 
+              mapRef.current?.animateToRegion(
+                {
+                  latitude,
+                  longitude,
+                  latitudeDelta: 0.003,
+                  longitudeDelta: 0.003,
+                },
+                400
+              );
+
               updateStoreData({
                 latitude,
                 longitude,
@@ -138,7 +168,7 @@ export default function LocationPicker() {
         style={[
           styles.locationButton,
           storeData.latitude &&
-            styles.locationButtonSuccess,
+          styles.locationButtonSuccess,
         ]}
         onPress={useCurrentLocation}
       >
