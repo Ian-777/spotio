@@ -16,6 +16,7 @@ import {
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import PrimaryButton from "../common/PrimaryButton";
+import LocationPicker from "./LocationPicker";
 
 import {
   getCities,
@@ -234,6 +235,8 @@ export default function StepOneBasicInfo() {
           })
         }
       />
+
+      <LocationPicker />
 
       <PrimaryButton
         title="Continuar"
