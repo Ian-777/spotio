@@ -1,223 +1,235 @@
 import {
-  useContext,
-  useState,
+    useContext,
+    useState,
 } from "react";
 
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ActivityIndicator,
+    Alert,
 } from "react-native";
 
 import {
-  MaterialIcons,
+    MaterialIcons,
 } from "@expo/vector-icons";
 
 import {
-  RegisterStoreContext,
+    RegisterStoreContext,
 } from "../../context/RegisterStoreContext";
 
 import {
-  searchAddress,
+    searchAddress,
 } from "../../services/locationService";
 
 export default function AddressField({
-  city,
-  locality,
-  disabled = false,
+    city,
+    locality,
+    disabled = false,
 }) {
 
-  const {
+    const {
 
-    storeData,
+        storeData,
 
-    updateStoreData,
+        updateStoreData,
 
-  } = useContext(
-    RegisterStoreContext
-  );
+    } = useContext(
+        RegisterStoreContext
+    );
 
-  const [loading, setLoading] =
-    useState(false);
+    const [loading, setLoading] =
+        useState(false);
 
-  async function handleSearch() {
+    async function handleSearch() {
 
-    if (!storeData.address.trim()) {
+        if (disabled) {
 
-      Alert.alert(
-        "Dirección",
-        "Escribe una dirección."
-      );
+            Alert.alert(
+                "Información incompleta",
+                "Primero selecciona la ciudad."
+            );
 
-      return;
+            return;
 
-    }
+        }
 
-    try {
+        if (!storeData.address.trim()) {
 
-      setLoading(true);
+            Alert.alert(
+                "Dirección",
+                "Escribe una dirección."
+            );
 
-      const result =
-        await searchAddress({
+            return;
 
-          address:
-            storeData.address,
+        }
 
-          city,
+        try {
 
-          locality,
+            setLoading(true);
 
-        });
+            const result =
+                await searchAddress({
 
-      if (!result) {
+                    address:
+                        storeData.address,
 
-        Alert.alert(
-          "No encontrada",
-          "No encontramos esa dirección."
-        );
+                    city,
 
-        return;
+                    locality,
 
-      }
+                });
 
-      updateStoreData({
+            if (!result) {
 
-        latitude:
-          result.latitude,
+                Alert.alert(
+                    "No encontrada",
+                    "No encontramos esa dirección."
+                );
 
-        longitude:
-          result.longitude,
+                return;
 
-      });
-
-    } catch (error) {
-
-      console.log(error);
-
-      Alert.alert(
-        "Error",
-        "No fue posible buscar la dirección."
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }
-
-  return (
-
-    <View style={styles.container}>
-
-      <Text style={styles.label}>
-        Dirección
-      </Text>
-
-      <View style={styles.inputContainer}>
-
-        <TextInput
-
-          style={styles.input}
-
-          value={storeData.address}
-
-          placeholder="Ej: Calle 123 #45-67"
-
-          placeholderTextColor="#7C7C7C"
-
-          onChangeText={(text)=>
+            }
 
             updateStoreData({
-              address:text,
-            })
 
-          }
+                latitude:
+                    result.latitude,
 
-        />
+                longitude:
+                    result.longitude,
 
-        <TouchableOpacity
+            });
 
-          onPress={handleSearch}
+        } catch (error) {
 
-          disabled={loading}
+            console.log(error);
 
-        >
+            Alert.alert(
+                "Error",
+                "No fue posible buscar la dirección."
+            );
 
-          {
+        } finally {
 
-            loading ?
+            setLoading(false);
 
-            <ActivityIndicator
-              color="#8B5CF6"
-            />
+        }
 
-            :
+    }
 
-            <MaterialIcons
-              name="search"
-              size={24}
-              color="#8B5CF6"
-            />
+    return (
 
-          }
+        <View style={styles.container}>
 
-        </TouchableOpacity>
+            <Text style={styles.label}>
+                Dirección
+            </Text>
 
-      </View>
+            <View style={styles.inputContainer}>
 
-    </View>
+                <TextInput
 
-  );
+                    style={styles.input}
+
+                    value={storeData.address}
+
+                    placeholder="Ej: Calle 123 #45-67"
+
+                    placeholderTextColor="#7C7C7C"
+
+                    onChangeText={(text) =>
+
+                        updateStoreData({
+                            address: text,
+                        })
+
+                    }
+
+                />
+
+                <TouchableOpacity
+                    onPress={handleSearch}
+                    disabled={loading || disabled}
+                >
+
+                    {
+
+                        loading ?
+
+                            <ActivityIndicator
+                                color="#8B5CF6"
+                            />
+
+                            :
+
+                            <MaterialIcons
+                                name="search"
+                                size={24}
+                                color={
+                                    disabled
+                                        ? "#5A5A5A"
+                                        : "#8B5CF6"
+                                }
+                            />
+
+                    }
+
+                </TouchableOpacity>
+
+            </View>
+
+        </View>
+
+    );
 
 }
 
-const styles=StyleSheet.create({
+const styles = StyleSheet.create({
 
-container:{
-marginBottom:20,
-},
+    container: {
+        marginBottom: 20,
+    },
 
-label:{
-color:"#FFF",
-fontSize:15,
-fontWeight:"600",
-marginBottom:8,
-},
+    label: {
+        color: "#FFF",
+        fontSize: 15,
+        fontWeight: "600",
+        marginBottom: 8,
+    },
 
-inputContainer:{
+    inputContainer: {
 
-flexDirection:"row",
+        flexDirection: "row",
 
-alignItems:"center",
+        alignItems: "center",
 
-backgroundColor:"#1A1A1A",
+        backgroundColor: "#1A1A1A",
 
-borderRadius:14,
+        borderRadius: 14,
 
-borderWidth:1,
+        borderWidth: 1,
 
-borderColor:"#2B2B2B",
+        borderColor: "#2B2B2B",
 
-paddingHorizontal:16,
+        paddingHorizontal: 16,
 
-},
+    },
 
-input:{
+    input: {
 
-flex:1,
+        flex: 1,
 
-height:54,
+        height: 54,
 
-color:"#FFF",
+        color: "#FFF",
 
-fontSize:15,
+        fontSize: 15,
 
-},
+    },
 
 });

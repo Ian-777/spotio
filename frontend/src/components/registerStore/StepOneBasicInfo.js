@@ -244,12 +244,9 @@ export default function StepOneBasicInfo() {
       />
 
       <AddressField
-        city={
-          selectedCity?.name
-        }
-        locality={
-          selectedLocality?.name
-        }
+        city={selectedCity?.name}
+        locality={selectedLocality?.name}
+        disabled={!storeData.city_id}
       />
 
       <LocationPicker />
@@ -272,14 +269,14 @@ export default function StepOneBasicInfo() {
 }
 
 const styles =
-StyleSheet.create({
+  StyleSheet.create({
 
-  container: {
+    container: {
 
-    padding: 20,
+      padding: 20,
 
-    paddingBottom: 50,
+      paddingBottom: 50,
 
-  },
+    },
 
-});
+  });
