@@ -17,6 +17,7 @@ import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import PrimaryButton from "../common/PrimaryButton";
 import LocationPicker from "./LocationPicker";
+import AddressField from "../common/AddressField";
 
 import {
   getCities,
@@ -109,6 +110,20 @@ export default function StepOneBasicInfo() {
 
   }
 
+  const selectedCity =
+    cities.find(
+      (city) =>
+        city.city_id ===
+        storeData.city_id
+    );
+
+  const selectedLocality =
+    localities.find(
+      (locality) =>
+        locality.locality_id ===
+        storeData.locality_id
+    );
+
   return (
 
     <ScrollView
@@ -167,6 +182,7 @@ export default function StepOneBasicInfo() {
 
           });
 
+          setLocalities([]);
           setNeighborhoods([]);
 
           loadLocalities(
@@ -197,6 +213,8 @@ export default function StepOneBasicInfo() {
 
           });
 
+          setNeighborhoods([]);
+
           loadNeighborhoods(
             item.locality_id
           );
@@ -225,14 +243,12 @@ export default function StepOneBasicInfo() {
         }
       />
 
-      <InputField
-        label="Dirección"
-        placeholder="Ej: Calle 123 #45-67"
-        value={storeData.address}
-        onChangeText={(text) =>
-          updateStoreData({
-            address: text,
-          })
+      <AddressField
+        city={
+          selectedCity?.name
+        }
+        locality={
+          selectedLocality?.name
         }
       />
 
@@ -260,9 +276,9 @@ StyleSheet.create({
 
   container: {
 
-    padding:20,
+    padding: 20,
 
-    paddingBottom:50,
+    paddingBottom: 50,
 
   },
 
