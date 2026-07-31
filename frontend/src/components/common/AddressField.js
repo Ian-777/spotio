@@ -1,235 +1,165 @@
-import {
-    useContext,
-    useState,
-} from "react";
+import { useContext, useState } from "react";
 
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    ActivityIndicator,
-    Alert,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 
-import {
-    MaterialIcons,
-} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
-import {
-    RegisterStoreContext,
-} from "../../context/RegisterStoreContext";
+import { RegisterStoreContext } from "../../context/RegisterStoreContext";
 
-import {
-    searchAddress,
-} from "../../services/locationService";
+import { searchAddress } from "../../services/locationService";
 
 export default function AddressField({
-    city,
-    locality,
-    disabled = false,
+  city,
+  locality,
+  disabled = false,
 }) {
+  const {
+    storeData,
+    updateStoreData,
+  } = useContext(RegisterStoreContext);
 
-    const {
+  const [loading, setLoading] = useState(false);
 
-        storeData,
+  async function handleSearch() {
+    if (disabled) {
+      Alert.alert(
+        "Información incompleta",
+        "Primero selecciona la ciudad."
+      );
 
-        updateStoreData,
-
-    } = useContext(
-        RegisterStoreContext
-    );
-
-    const [loading, setLoading] =
-        useState(false);
-
-    async function handleSearch() {
-
-        if (disabled) {
-
-            Alert.alert(
-                "Información incompleta",
-                "Primero selecciona la ciudad."
-            );
-
-            return;
-
-        }
-
-        if (!storeData.address.trim()) {
-
-            Alert.alert(
-                "Dirección",
-                "Escribe una dirección."
-            );
-
-            return;
-
-        }
-
-        try {
-
-            setLoading(true);
-
-            const result =
-                await searchAddress({
-
-                    address:
-                        storeData.address,
-
-                    city,
-
-                    locality,
-
-                });
-
-            if (!result) {
-
-                Alert.alert(
-                    "No encontrada",
-                    "No encontramos esa dirección."
-                );
-
-                return;
-
-            }
-
-            updateStoreData({
-
-                latitude:
-                    result.latitude,
-
-                longitude:
-                    result.longitude,
-
-            });
-
-        } catch (error) {
-
-            console.log(error);
-
-            Alert.alert(
-                "Error",
-                "No fue posible buscar la dirección."
-            );
-
-        } finally {
-
-            setLoading(false);
-
-        }
-
+      return;
     }
 
-    return (
+    if (!storeData.address.trim()) {
+      Alert.alert(
+        "Dirección",
+        "Escribe una dirección."
+      );
 
-        <View style={styles.container}>
+      return;
+    }
 
-            <Text style={styles.label}>
-                Dirección
-            </Text>
+    try {
+      setLoading(true);
 
-            <View style={styles.inputContainer}>
+      const result = await searchAddress({
+        address: storeData.address,
+        city,
+        locality,
+      });
 
-                <TextInput
+      if (!result) {
+        Alert.alert(
+          "Dirección no encontrada",
+          "Intenta escribir una dirección más específica."
+        );
 
-                    style={styles.input}
+        return;
+      }
 
-                    value={storeData.address}
+      updateStoreData({
+        address:
+          result.display_name ||
+          storeData.address,
 
-                    placeholder="Ej: Calle 123 #45-67"
+        latitude: Number(
+          result.latitude
+        ),
 
-                    placeholderTextColor="#7C7C7C"
+        longitude: Number(
+          result.longitude
+        ),
+      });
+    } catch (error) {
+      console.log(error);
 
-                    onChangeText={(text) =>
+      Alert.alert(
+        "Error",
+        "No fue posible buscar la dirección."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
-                        updateStoreData({
-                            address: text,
-                        })
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>
+        Dirección
+      </Text>
 
-                    }
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={storeData.address}
+          placeholder="Ej: Calle 123 #45-67"
+          placeholderTextColor="#7C7C7C"
+          onChangeText={(text) =>
+            updateStoreData({
+              address: text,
+            })
+          }
+        />
 
-                />
-
-                <TouchableOpacity
-                    onPress={handleSearch}
-                    disabled={loading || disabled}
-                >
-
-                    {
-
-                        loading ?
-
-                            <ActivityIndicator
-                                color="#8B5CF6"
-                            />
-
-                            :
-
-                            <MaterialIcons
-                                name="search"
-                                size={24}
-                                color={
-                                    disabled
-                                        ? "#5A5A5A"
-                                        : "#8B5CF6"
-                                }
-                            />
-
-                    }
-
-                </TouchableOpacity>
-
-            </View>
-
-        </View>
-
-    );
-
+        <TouchableOpacity
+          onPress={handleSearch}
+          disabled={
+            loading || disabled
+          }
+        >
+          {loading ? (
+            <ActivityIndicator color="#8B5CF6" />
+          ) : (
+            <MaterialIcons
+              name="search"
+              size={24}
+              color={
+                disabled
+                  ? "#5A5A5A"
+                  : "#8B5CF6"
+              }
+            />
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+  },
 
-    container: {
-        marginBottom: 20,
-    },
+  label: {
+    color: "#FFF",
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
 
-    label: {
-        color: "#FFF",
-        fontSize: 15,
-        fontWeight: "600",
-        marginBottom: 8,
-    },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1A1A1A",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#2B2B2B",
+    paddingHorizontal: 16,
+  },
 
-    inputContainer: {
-
-        flexDirection: "row",
-
-        alignItems: "center",
-
-        backgroundColor: "#1A1A1A",
-
-        borderRadius: 14,
-
-        borderWidth: 1,
-
-        borderColor: "#2B2B2B",
-
-        paddingHorizontal: 16,
-
-    },
-
-    input: {
-
-        flex: 1,
-
-        height: 54,
-
-        color: "#FFF",
-
-        fontSize: 15,
-
-    },
-
+  input: {
+    flex: 1,
+    height: 54,
+    color: "#FFF",
+    fontSize: 15,
+  },
 });
