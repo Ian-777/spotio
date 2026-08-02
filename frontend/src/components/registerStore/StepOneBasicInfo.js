@@ -7,8 +7,8 @@ import { RegisterStoreContext } from "../../context/RegisterStoreContext";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import PrimaryButton from "../common/PrimaryButton";
+import AddressAutocomplete from "../common/AddressAutocomplete";
 import LocationPicker from "./LocationPicker";
-import AddressField from "../common/AddressField";
 
 import {
   getCities,
@@ -17,13 +17,14 @@ import {
 } from "../../services/storesService";
 
 export default function StepOneBasicInfo() {
-  const { storeData, updateStoreData } = useContext(RegisterStoreContext);
+  const { storeData, updateStoreData } =
+    useContext(RegisterStoreContext);
 
   const [cities, setCities] = useState([]);
-
-  const [localities, setLocalities] = useState([]);
-
-  const [neighborhoods, setNeighborhoods] = useState([]);
+  const [localities, setLocalities] =
+    useState([]);
+  const [neighborhoods, setNeighborhoods] =
+    useState([]);
 
   useEffect(() => {
     loadCities();
@@ -32,7 +33,6 @@ export default function StepOneBasicInfo() {
   async function loadCities() {
     try {
       const data = await getCities();
-
       setCities(data);
     } catch (error) {
       console.log(error);
@@ -42,7 +42,6 @@ export default function StepOneBasicInfo() {
   async function loadLocalities(city_id) {
     try {
       const data = await getLocalities(city_id);
-
       setLocalities(data);
     } catch (error) {
       console.log(error);
@@ -51,21 +50,14 @@ export default function StepOneBasicInfo() {
 
   async function loadNeighborhoods(locality_id) {
     try {
-      const data = await getNeighborhoods(locality_id);
+      const data =
+        await getNeighborhoods(locality_id);
 
       setNeighborhoods(data);
     } catch (error) {
       console.log(error);
     }
   }
-
-  const selectedCity = cities.find(
-    (city) => city.city_id === storeData.city_id,
-  );
-
-  const selectedLocality = localities.find(
-    (locality) => locality.locality_id === storeData.locality_id,
-  );
 
   return (
     <ScrollView
@@ -105,9 +97,7 @@ export default function StepOneBasicInfo() {
         onChange={(item) => {
           updateStoreData({
             city_id: item.city_id,
-
             locality_id: null,
-
             neighborhood_id: null,
           });
 
@@ -128,7 +118,6 @@ export default function StepOneBasicInfo() {
         onChange={(item) => {
           updateStoreData({
             locality_id: item.locality_id,
-
             neighborhood_id: null,
           });
 
@@ -147,25 +136,18 @@ export default function StepOneBasicInfo() {
         placeholder="Selecciona un barrio"
         onChange={(item) =>
           updateStoreData({
-            neighborhood_id: item.neighborhood_id,
+            neighborhood_id:
+              item.neighborhood_id,
           })
         }
       />
 
-      <AddressField
-        city={selectedCity?.name}
-        locality={selectedLocality?.name}
-        disabled={!storeData.city_id}
-      />
+      <AddressAutocomplete />
 
       <Text style={styles.helperText}>
         {!storeData.city_id
-          ? "🔘 Selecciona una ciudad para buscar la dirección."
-          : !storeData.address
-            ? "🟡 Escribe la dirección y pulsa la lupa."
-            : storeData.latitude && storeData.longitude
-              ? "🟢 Dirección encontrada. Ajusta el marcador si es necesario."
-              : "🟡 Busca la dirección para ubicar el establecimiento."}
+          ? "🔘 Selecciona una ciudad antes de buscar la dirección."
+          : "🟡 Próximamente podrás buscar y seleccionar la dirección automáticamente."}
       </Text>
 
       <LocationPicker />

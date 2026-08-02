@@ -23,14 +23,16 @@ import {
 
 import mapDarkStyle from "../../styles/mapDarkStyle";
 
+import {
+  reverseGeocode,
+} from "../../services/locationService";
+
 export default function LocationPicker() {
 
   const {
     storeData,
     updateStoreData,
-  } = useContext(
-    RegisterStoreContext
-  );
+  } = useContext(RegisterStoreContext);
 
   const mapRef = useRef(null);
 
@@ -39,6 +41,52 @@ export default function LocationPicker() {
 
   const longitude =
     storeData.longitude ?? -74.2478944;
+
+  async function updateAddressFromCoordinates(
+    latitude,
+    longitude
+  ) {
+    try {
+
+      const address =
+        await reverseGeocode(
+          latitude,
+          longitude
+        );
+
+      if (address) {
+
+        updateStoreData({
+
+          latitude,
+          longitude,
+
+          address:
+            address.address ??
+            storeData.address,
+
+        });
+
+      } else {
+
+        updateStoreData({
+          latitude,
+          longitude,
+        });
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      updateStoreData({
+        latitude,
+        longitude,
+      });
+
+    }
+  }
 
   async function useCurrentLocation() {
 
@@ -64,24 +112,21 @@ export default function LocationPicker() {
             Location.Accuracy.High,
         });
 
-      updateStoreData({
+      const latitude =
+        location.coords.latitude;
 
-        latitude:
-          location.coords.latitude,
+      const longitude =
+        location.coords.longitude;
 
-        longitude:
-          location.coords.longitude,
-
-      });
+      await updateAddressFromCoordinates(
+        latitude,
+        longitude
+      );
 
       mapRef.current?.animateToRegion(
         {
-          latitude:
-            location.coords.latitude,
-
-          longitude:
-            location.coords.longitude,
-
+          latitude,
+          longitude,
           latitudeDelta: 0.003,
           longitudeDelta: 0.003,
         },
@@ -134,7 +179,7 @@ export default function LocationPicker() {
             }}
             draggable
             pinColor="#7C3AED"
-            onDragEnd={(e) => {
+            onDragEnd={async (e) => {
 
               const {
                 latitude,
@@ -152,10 +197,10 @@ export default function LocationPicker() {
                 400
               );
 
-              updateStoreData({
+              await updateAddressFromCoordinates(
                 latitude,
-                longitude,
-              });
+                longitude
+              );
 
             }}
           />
@@ -168,7 +213,7 @@ export default function LocationPicker() {
         style={[
           styles.locationButton,
           storeData.latitude &&
-          styles.locationButtonSuccess,
+            styles.locationButtonSuccess,
         ]}
         onPress={useCurrentLocation}
       >
