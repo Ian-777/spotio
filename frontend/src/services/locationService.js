@@ -6,7 +6,6 @@ export async function searchAddress({
   city,
   locality,
 }) {
-
   const query = [
     address,
     locality,
@@ -20,6 +19,7 @@ export async function searchAddress({
     `${NOMINATIM_URL}?` +
     `q=${encodeURIComponent(query)}` +
     `&format=jsonv2` +
+    `&addressdetails=1` +
     `&limit=1`;
 
   const response = await fetch(url, {
@@ -34,26 +34,19 @@ export async function searchAddress({
     );
   }
 
-  const data =
-    await response.json();
+  const data = await response.json();
 
   if (!data.length) {
     return null;
   }
 
   return {
+    latitude: Number(data[0].lat),
 
-    latitude: Number(
-      data[0].lat
-    ),
+    longitude: Number(data[0].lon),
 
-    longitude: Number(
-      data[0].lon
-    ),
+    displayName: data[0].display_name,
 
-    displayName:
-      data[0].display_name,
-
+    address: data[0].address,
   };
-
 }

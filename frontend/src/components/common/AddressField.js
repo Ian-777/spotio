@@ -16,33 +16,20 @@ import { RegisterStoreContext } from "../../context/RegisterStoreContext";
 
 import { searchAddress } from "../../services/locationService";
 
-export default function AddressField({
-  city,
-  locality,
-  disabled = false,
-}) {
-  const {
-    storeData,
-    updateStoreData,
-  } = useContext(RegisterStoreContext);
+export default function AddressField({ city, locality, disabled = false }) {
+  const { storeData, updateStoreData } = useContext(RegisterStoreContext);
 
   const [loading, setLoading] = useState(false);
 
   async function handleSearch() {
     if (disabled) {
-      Alert.alert(
-        "Información incompleta",
-        "Primero selecciona la ciudad."
-      );
+      Alert.alert("Información incompleta", "Primero selecciona la ciudad.");
 
       return;
     }
 
     if (!storeData.address.trim()) {
-      Alert.alert(
-        "Dirección",
-        "Escribe una dirección."
-      );
+      Alert.alert("Dirección", "Escribe una dirección.");
 
       return;
     }
@@ -59,32 +46,23 @@ export default function AddressField({
       if (!result) {
         Alert.alert(
           "Dirección no encontrada",
-          "Intenta escribir una dirección más específica."
+          "Intenta escribir una dirección más específica.",
         );
 
         return;
       }
 
       updateStoreData({
-        address:
-          result.display_name ||
-          storeData.address,
+        address: result.displayName || storeData.address,
 
-        latitude: Number(
-          result.latitude
-        ),
+        latitude: Number(result.latitude),
 
-        longitude: Number(
-          result.longitude
-        ),
+        longitude: Number(result.longitude),
       });
     } catch (error) {
       console.log(error);
 
-      Alert.alert(
-        "Error",
-        "No fue posible buscar la dirección."
-      );
+      Alert.alert("Error", "No fue posible buscar la dirección.");
     } finally {
       setLoading(false);
     }
@@ -92,9 +70,7 @@ export default function AddressField({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>
-        Dirección
-      </Text>
+      <Text style={styles.label}>Dirección</Text>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -109,23 +85,14 @@ export default function AddressField({
           }
         />
 
-        <TouchableOpacity
-          onPress={handleSearch}
-          disabled={
-            loading || disabled
-          }
-        >
+        <TouchableOpacity onPress={handleSearch} disabled={loading || disabled}>
           {loading ? (
             <ActivityIndicator color="#8B5CF6" />
           ) : (
             <MaterialIcons
               name="search"
               size={24}
-              color={
-                disabled
-                  ? "#5A5A5A"
-                  : "#8B5CF6"
-              }
+              color={disabled ? "#5A5A5A" : "#8B5CF6"}
             />
           )}
         </TouchableOpacity>
