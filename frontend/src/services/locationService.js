@@ -22,6 +22,8 @@ export async function searchAddress({
     `&addressdetails=1` +
     `&limit=1`;
 
+  console.log(url);  
+
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
@@ -29,10 +31,24 @@ export async function searchAddress({
   });
 
   if (!response.ok) {
-    throw new Error(
-      "No fue posible buscar la dirección."
-    );
-  }
+
+  console.log(
+    "STATUS:",
+    response.status
+  );
+
+  const text =
+    await response.text();
+
+  console.log(
+    "BODY:",
+    text
+  );
+
+  throw new Error(
+    "No fue posible buscar la dirección."
+  );
+}
 
   const data = await response.json();
 
