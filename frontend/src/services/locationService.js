@@ -1,6 +1,8 @@
-const NOMINATIM_URL =
-  "https://nominatim.openstreetmap.org/search";
+import API_URL from "../config/api";
 
+/*
+  Busca una dirección mediante nuestro backend.
+*/
 export async function searchAddress({
   address,
   city,
@@ -16,78 +18,72 @@ export async function searchAddress({
     .join(", ");
 
   const url =
-    `${NOMINATIM_URL}?` +
-    `q=${encodeURIComponent(query)}` +
-    `&format=jsonv2` +
-    `&addressdetails=1` +
-    `&limit=1`;
+    `${API_URL}/api/location/search?` +
+    `q=${encodeURIComponent(query)}`;
 
-  console.log(url);  
+  console.log(
+    "LOCATION SEARCH:",
+    url
+  );
 
-  const response = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const response = await fetch(url);
 
   if (!response.ok) {
+    const text = await response.text();
 
-  console.log(
-    "STATUS:",
-    response.status
-  );
+    console.log(
+      "LOCATION STATUS:",
+      response.status
+    );
 
-  const text =
-    await response.text();
+    console.log(
+      "LOCATION BODY:",
+      text
+    );
 
-  console.log(
-    "BODY:",
-    text
-  );
-
-  throw new Error(
-    "No fue posible buscar la dirección."
-  );
-}
+    throw new Error(
+      "No fue posible buscar la dirección."
+    );
+  }
 
   const data = await response.json();
 
-  if (!data.length) {
+  if (!data) {
     return null;
   }
 
   return {
-    latitude: Number(data[0].lat),
-    longitude: Number(data[0].lon),
-    displayName: data[0].display_name,
-    address: data[0].address,
+    latitude: Number(data.latitude),
+    longitude: Number(data.longitude),
+    displayName: data.displayName,
+    address: data.address,
   };
 }
 
+
 /*
-  Devuelve varias sugerencias para el autocompletado
+  Devuelve sugerencias para el autocompletado.
+
+  Por ahora utiliza el mismo endpoint
+  del backend.
 */
 export async function searchAddressSuggestions(
   query
 ) {
-  if (!query || query.trim().length < 3) {
+  if (
+    !query ||
+    query.trim().length < 3
+  ) {
     return [];
   }
 
   const url =
-    `${NOMINATIM_URL}?` +
+    `${API_URL}/api/location/search?` +
     `q=${encodeURIComponent(
       `${query}, Colombia`
-    )}` +
-    `&format=jsonv2` +
-    `&addressdetails=1` +
-    `&limit=5`;
+    )}`;
 
-  const response = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(
@@ -97,10 +93,16 @@ export async function searchAddressSuggestions(
 
   const data = await response.json();
 
-  return data.map((item) => ({
-    latitude: Number(item.lat),
-    longitude: Number(item.lon),
-    displayName: item.display_name,
-    address: item.address,
-  }));
+  if (!data) {
+    return [];
+  }
+
+  return [
+    {
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
+      displayName: data.displayName,
+      address: data.address,
+    },
+  ];
 }

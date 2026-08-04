@@ -14,6 +14,7 @@ const favoritesRoutes = require("./routes/favoritesRoutes");
 const ratingsRoutes = require("./routes/ratingsRoutes");
 const reviewsRoutes = require("./routes/reviewsRoutes");
 const photosRoutes = require("./routes/photosRoutes");
+const locationRoutes = require("./routes/locationRoutes");
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api/favorites", favoritesRoutes);
 app.use("/api/ratings", ratingsRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/photos", photosRoutes);
+app.use("/api/location", locationRoutes);
 
 /* =========================
    RUTA PRINCIPAL
