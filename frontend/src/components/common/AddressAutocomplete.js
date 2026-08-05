@@ -29,12 +29,22 @@ export default function AddressAutocomplete({
     useState(false);
 
   async function handleSearch() {
-    if (!onSearch) return;
+    if (!onSearch) {
+      return;
+    }
 
     try {
       setLoading(true);
 
       await onSearch();
+
+    } catch (error) {
+
+      console.log(
+        "ADDRESS SEARCH ERROR:",
+        error
+      );
+
     } finally {
       setLoading(false);
     }
@@ -42,16 +52,20 @@ export default function AddressAutocomplete({
 
   return (
     <View style={styles.container}>
+
       <Text style={styles.label}>
         Dirección
       </Text>
 
       <View style={styles.inputContainer}>
+
         <TextInput
           style={styles.input}
           value={storeData.address}
           placeholder="Ej: Calle 123 #45-67"
           placeholderTextColor="#7C7C7C"
+          autoCapitalize="sentences"
+          autoCorrect={false}
           onChangeText={(text) =>
             updateStoreData({
               address: text,
@@ -62,26 +76,36 @@ export default function AddressAutocomplete({
         <TouchableOpacity
           onPress={handleSearch}
           disabled={loading}
+          style={styles.searchButton}
         >
+
           {loading ? (
+
             <ActivityIndicator
               color="#8B5CF6"
             />
+
           ) : (
+
             <MaterialIcons
               name="search"
               size={24}
               color="#8B5CF6"
             />
+
           )}
+
         </TouchableOpacity>
+
       </View>
+
     </View>
   );
 }
 
 const styles =
   StyleSheet.create({
+
     container: {
       marginBottom: 20,
     },
@@ -97,8 +121,7 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
 
-      backgroundColor:
-        "#1A1A1A",
+      backgroundColor: "#1A1A1A",
 
       borderRadius: 14,
 
@@ -106,7 +129,8 @@ const styles =
 
       borderColor: "#2B2B2B",
 
-      paddingHorizontal: 16,
+      paddingLeft: 16,
+      paddingRight: 8,
     },
 
     input: {
@@ -118,4 +142,13 @@ const styles =
 
       fontSize: 15,
     },
+
+    searchButton: {
+      width: 44,
+      height: 44,
+
+      alignItems: "center",
+      justifyContent: "center",
+    },
+
   });
